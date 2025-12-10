@@ -1,0 +1,225 @@
+@{
+    ViewData["Title"] = "Xây dựng cấu hình bằng AI";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex align-items-center mb-4">
+                <div class="me-3 bg-danger text-white rounded-circle d-flex align-items-center justify-content-center"
+                     style="width:60px;height:60px;">
+                    <i class="fas fa-robot fa-2x"></i>
+                </div>
+                <div>
+                    <h1 class="fw-bold mb-1">Xây dựng cấu hình bằng AI</h1>
+                    <p class="text-muted mb-0">
+                        Nhập ngân sách, mục đích sử dụng và yêu cầu đặc biệt. Trợ lý AI sẽ đề xuất cấu hình tối ưu từ
+                        kho linh kiện hiện có của PC STORE.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="fas fa-sliders-h me-2"></i>Thông tin yêu cầu</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-light border mb-4">
+                        <div class="fw-semibold text-danger mb-2">
+                            <i class="fas fa-info-circle me-1"></i>Hướng dẫn
+                        </div>
+                        <ul class="mb-0 ps-3">
+                            <li>Nhập ngân sách tổng (bao gồm cả màn hình, phụ kiện nếu cần).</li>
+                            <li>Chọn đúng mục đích chính để AI ưu tiên linh kiện phù hợp.</li>
+                            <li>Mô tả yêu cầu đặc biệt: kích thước case, màu sắc, số cổng, độ ồn, v.v.</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-uppercase small text-muted">Ngân sách tổng (VND)</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-light">₫</span>
+                            <input type="number"
+                                   class="form-control fw-semibold"
+                                   id="aiBudget"
+                                   placeholder="VD: 30000000"
+                                   min="5000000"
+                                   step="1000000" />
+                        </div>
+                        <small class="text-muted d-block mt-1">
+                            AI sẽ tối ưu cấu hình trong phạm vi ngân sách này và tuyệt đối không vượt.
+                        </small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-uppercase small text-muted">Mục đích sử dụng chính</label>
+                        <select class="form-select form-select-lg" id="aiUsage">
+                            <option value="Gaming">Gaming / Esports</option>
+                            <option value="Văn phòng">Văn phòng / Học tập</option>
+                            <option value="Đồ họa">Thiết kế đồ họa / Dựng phim</option>
+                            <option value="AI">AI / Machine Learning</option>
+                            <option value="Livestream">Livestream / Content Creator</option>
+                            <option value="Khác">Nhu cầu khác</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-uppercase small text-muted">Yêu cầu đặc biệt (tuỳ chọn)</label>
+                        <textarea class="form-control form-control-lg"
+                                  rows="4"
+                                  id="aiSpecial"
+                                  placeholder="Ví dụ: case mini ITX, nhiều cổng USB-C, tông màu đen đỏ, ưu tiên ít ồn..."></textarea>
+                    </div>
+
+                    <button class="btn btn-danger w-100 py-3 fs-5" id="btnGenerateConfig">
+                        <i class="fas fa-magic me-2"></i>Yêu cầu AI đề xuất cấu hình
+                    </button>
+
+                    <div class="text-center mt-3 text-muted" style="font-size: 0.9rem;">
+                        <i class="fas fa-database me-1"></i>AI sử dụng dữ liệu sản phẩm thực tế tại PC STORE.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-dark text-white d-flex align-items-center">
+                    <i class="fas fa-list-check me-2"></i>
+                    <h5 class="mb-0">Kết quả đề xuất</h5>
+                    <div class="ms-auto" id="aiStatus"></div>
+                </div>
+                <div class="card-body" id="aiResult">
+                    <div class="text-center text-muted py-5">
+                        <i class="fas fa-robot fa-3x mb-3"></i>
+                        <p class="mb-1">Nhập thông tin ở bên trái và nhấn "Yêu cầu AI" để nhận cấu hình gợi ý.</p>
+                        <small>AI sẽ trả về bảng cấu hình chi tiết, tổng chi phí và gợi ý nâng cấp / tiết kiệm.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const btnGenerate = document.getElementById('btnGenerateConfig');
+        const resultContainer = document.getElementById('aiResult');
+        const statusIndicator = document.getElementById('aiStatus');
+
+        btnGenerate.addEventListener('click', async () => {
+            const budget = parseFloat(document.getElementById('aiBudget').value || '0');
+            const usage = document.getElementById('aiUsage').value;
+            const special = document.getElementById('aiSpecial').value;
+
+            if (budget <= 0) {
+                alert('Vui lòng nhập ngân sách hợp lệ (>= 5.000.000₫).');
+                return;
+            }
+
+            btnGenerate.disabled = true;
+            btnGenerate.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Đang phân tích...';
+            statusIndicator.innerHTML =
+                '<span class="badge bg-warning text-dark"><i class="fas fa-robot me-1"></i>AI đang làm việc...</span>';
+            resultContainer.innerHTML =
+                '<div class="text-center py-5 text-muted">' +
+                '<div class="spinner-border text-danger mb-3" role="status"></div>' +
+                '<p>AI đang phân tích kho linh kiện và ngân sách của bạn...</p>' +
+                '</div>';
+
+            try {
+                const response = await fetch('/BuildPC/BuildAIRecommend', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ budget, usage, specialRequirements: special })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    // Server trả về HTML đã format sẵn
+                    resultContainer.innerHTML = data.message;
+                    statusIndicator.innerHTML =
+                        '<span class="badge bg-success"><i class="fas fa-check me-1"></i>AI đã hoàn thành</span>';
+                } else {
+                    resultContainer.innerHTML = `<div class="alert alert-warning">${data.message}</div>`;
+                    statusIndicator.innerHTML =
+                        '<span class="badge bg-danger"><i class="fas fa-triangle-exclamation me-1"></i>Lỗi</span>';
+                }
+            } catch (error) {
+                console.error(error);
+                resultContainer.innerHTML =
+                    '<div class="alert alert-danger">Có lỗi xảy ra. Vui lòng thử lại sau.</div>';
+                statusIndicator.innerHTML =
+                    '<span class="badge bg-danger"><i class="fas fa-triangle-exclamation me-1"></i>Lỗi</span>';
+            } finally {
+                btnGenerate.disabled = false;
+                btnGenerate.innerHTML = '<i class="fas fa-magic me-2"></i>Yêu cầu AI đề xuất cấu hình';
+            }
+        });
+    </script>
+
+    <style>
+        .ai-config-result {
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .summary-card {
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 0.85rem 1rem;
+            background: #fff;
+            height: 100%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+        }
+
+        .summary-card .label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #6c757d;
+        }
+
+        .summary-card .value {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .summary-card.special {
+            border-left: 4px solid #dc3545;
+        }
+
+        .ai-config-result .table th {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .ai-config-result .badge {
+            background-color: rgba(220, 53, 69, .12);
+        }
+
+        .cta-box {
+            border: 1px dashed #dc3545;
+            border-radius: 12px;
+            padding: 1rem;
+            background: rgba(220, 53, 69, .04);
+        }
+
+        @@media (max-width: 767px) {
+            .summary-card .value {
+                font-size: 1rem;
+            }
+
+            .ai-config-result .table {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+}
+
+

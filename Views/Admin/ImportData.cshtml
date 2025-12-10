@@ -1,0 +1,157 @@
+@{
+    ViewData["Title"] = "Import Dữ liệu từ Excel";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Import Dữ liệu từ Excel</h2>
+    
+    <div class="alert alert-info">
+        <h5><i class="fas fa-info-circle"></i> Hướng dẫn</h5>
+        <p class="mb-2">Click nút "Chuyển Excel sang JSON" để:</p>
+        <ul>
+            <li>Đọc dữ liệu từ file DATABASE.xlsx</li>
+            <li>Tự động tìm kiếm hình ảnh cho sản phẩm chưa có ảnh</li>
+            <li>Lưu dữ liệu vào file products.json</li>
+            <li>Website sẽ tự động sử dụng dữ liệu từ JSON (nhanh hơn Excel)</li>
+        </ul>
+    </div>
+    
+    <div class="mb-3">
+        <button class="btn text-white" style="background-color: #dc3545;" onclick="convertToJson()">
+            <i class="fas fa-file-export"></i> Chuyển Excel sang JSON và tìm hình ảnh
+        </button>
+        <a href="@Url.Action("ViewJsonData", "Data")" class="btn btn-secondary">
+            <i class="fas fa-file-code"></i> Xem dữ liệu JSON
+        </a>
+    </div>
+
+    @if (ViewBag.Success != null)
+    {
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i> @ViewBag.Success
+        </div>
+    }
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle"></i> @ViewBag.Error
+        </div>
+    }
+
+    @if (ViewBag.Products != null)
+    {
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-white" style="background-color: #dc3545;">
+                        <h5 class="mb-0"><i class="fas fa-box"></i> Sản phẩm (@ViewBag.ProductCount)</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark sticky-top">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Tên sản phẩm</th>
+                                        <th>Giá</th>
+                                        <th>Danh mục</th>
+                                        <th>Nổi bật</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var product in ViewBag.Products as List<PCSTORE.Models.Product>)
+                                    {
+                                        <tr>
+                                            <td>@product.Id</td>
+                                            <td>@product.Name</td>
+                                            <td>@string.Format("{0:N0}", product.Price) đ</td>
+                                            <td>@product.CategoryId</td>
+                                            <td>@(product.IsFeatured ? "✓" : "")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-white" style="background-color: #000;">
+                        <h5 class="mb-0"><i class="fas fa-list"></i> Danh mục (@ViewBag.CategoryCount)</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark sticky-top">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Tên danh mục</th>
+                                        <th>Mô tả</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var category in ViewBag.Categories as List<PCSTORE.Models.Category>)
+                                    {
+                                        <tr>
+                                            <td>@category.Id</td>
+                                            <td>@category.Name</td>
+                                            <td>@category.Description</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="mt-3">
+        <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">
+            <i class="fas fa-home"></i> Về trang chủ
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function convertToJson() {
+            if (!confirm('Bạn có chắc muốn chuyển đổi Excel sang JSON và tự động tìm hình ảnh? Quá trình này có thể mất vài phút.')) {
+                return;
+            }
+
+            const btn = event.target;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+
+            fetch('/Data/ImportFromExcel', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-file-export"></i> Chuyển Excel sang JSON và tìm hình ảnh';
+                
+                if (data.success) {
+                    alert('Thành công! ' + data.message + '\n\nĐã tạo file: ' + data.jsonPath);
+                    location.reload();
+                } else {
+                    alert('Lỗi: ' + data.message);
+                }
+            })
+            .catch(error => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-file-export"></i> Chuyển Excel sang JSON và tìm hình ảnh';
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi chuyển đổi dữ liệu');
+            });
+        }
+    </script>
+}
+

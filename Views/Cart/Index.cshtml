@@ -1,0 +1,247 @@
+@model PCSTORE.Controllers.CartViewModel
+@{
+    ViewData["Title"] = "Giỏ hàng";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">
+                <i class="fas fa-shopping-cart me-2"></i>Giỏ hàng của bạn
+            </h2>
+        </div>
+    </div>
+
+    @if (Model.Items.Count == 0)
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-info text-center py-5">
+                    <i class="fas fa-shopping-cart fa-3x mb-3 text-muted"></i>
+                    <h4>Giỏ hàng của bạn đang trống</h4>
+                    <p class="text-muted">Hãy thêm sản phẩm vào giỏ hàng để tiếp tục mua sắm!</p>
+                    <a href="@Url.Action("Index", "Home")" class="btn btn-danger mt-3">
+                        <i class="fas fa-arrow-left me-2"></i>Tiếp tục mua sắm
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-box me-2"></i>Sản phẩm (@Model.TotalItems sản phẩm)
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var item in Model.Items)
+                        {
+                            <div class="row border-bottom pb-3 mb-3 cart-item" data-product-id="@item.ProductId">
+                                <div class="col-md-2">
+                                    <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "https://via.placeholder.com/150x150?text=No+Image" : item.ImageUrl)" 
+                                         alt="@item.ProductName" 
+                                         class="img-fluid rounded" 
+                                         style="max-height: 100px; object-fit: cover;">
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="fw-bold">@item.ProductName</h6>
+                                    <p class="text-muted mb-2">
+                                        <strong class="text-danger">@item.Price.ToString("N0")₫</strong>
+                                    </p>
+                                    @if (item.Stock > 0)
+                                    {
+                                        <small class="text-success">
+                                            <i class="fas fa-check-circle"></i> Còn hàng (@item.Stock)
+                                        </small>
+                                    }
+                                    else
+                                    {
+                                        <small class="text-danger">
+                                            <i class="fas fa-times-circle"></i> Hết hàng
+                                        </small>
+                                    }
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label">Số lượng:</label>
+                                    <div class="input-group">
+                                        <button class="btn btn-outline-secondary btn-sm" type="button" onclick="updateQuantity(@item.ProductId, @(item.Quantity - 1))">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <input type="number" 
+                                               class="form-control form-control-sm text-center" 
+                                               value="@item.Quantity" 
+                                               min="1" 
+                                               max="@item.Stock"
+                                               onchange="updateQuantity(@item.ProductId, parseInt(this.value))"
+                                               id="quantity-@item.ProductId">
+                                        <button class="btn btn-outline-secondary btn-sm" type="button" onclick="updateQuantity(@item.ProductId, @(item.Quantity + 1))">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 text-end">
+                                    <div class="mb-2">
+                                        <strong class="text-danger">@item.Total.ToString("N0")₫</strong>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="removeFromCart(@item.ProductId)">
+                                        <i class="fas fa-trash"></i> Xóa
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card sticky-top" style="top: 20px;">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-receipt me-2"></i>Tổng thanh toán
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Tổng sản phẩm:</span>
+                            <strong id="total-items">@Model.TotalItems</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Tạm tính:</span>
+                            <strong id="subtotal">@Model.TotalAmount.ToString("N0")₫</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span>Phí vận chuyển:</span>
+                            <strong class="text-success">Miễn phí</strong>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-4">
+                            <h5>Tổng cộng:</h5>
+                            <h5 class="text-danger" id="total-amount">@Model.TotalAmount.ToString("N0")₫</h5>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-danger btn-lg" onclick="checkout()">
+                                <i class="fas fa-credit-card me-2"></i>Thanh toán
+                            </button>
+                            <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Tiếp tục mua sắm
+                            </a>
+                            <button class="btn btn-outline-danger" onclick="clearCart()">
+                                <i class="fas fa-trash me-2"></i>Xóa giỏ hàng
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        // Cập nhật số lượng sản phẩm
+        function updateQuantity(productId, quantity) {
+            if (quantity < 1) {
+                if (confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?')) {
+                    removeFromCart(productId);
+                }
+                return;
+            }
+
+            fetch('@Url.Action("UpdateQuantity", "Cart")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    productId: productId,
+                    quantity: quantity
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Cập nhật UI
+                    location.reload(); // Reload để cập nhật toàn bộ
+                } else {
+                    alert('Lỗi: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi cập nhật số lượng');
+            });
+        }
+
+        // Xóa sản phẩm khỏi giỏ hàng
+        function removeFromCart(productId) {
+            if (!confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?')) {
+                return;
+            }
+
+            fetch('@Url.Action("RemoveFromCart", "Cart")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    productId: productId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Xóa phần tử khỏi DOM
+                    const item = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
+                    if (item) {
+                        item.remove();
+                    }
+                    
+                    // Reload để cập nhật tổng tiền
+                    location.reload();
+                } else {
+                    alert('Lỗi: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi xóa sản phẩm');
+            });
+        }
+
+        // Xóa toàn bộ giỏ hàng
+        function clearCart() {
+            if (!confirm('Bạn có chắc muốn xóa toàn bộ giỏ hàng?')) {
+                return;
+            }
+
+            fetch('@Url.Action("ClearCart", "Cart")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Lỗi: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi xóa giỏ hàng');
+            });
+        }
+
+        // Thanh toán (có thể mở rộng sau)
+        function checkout() {
+            alert('Tính năng thanh toán đang được phát triển. Vui lòng liên hệ với chúng tôi để đặt hàng!');
+        }
+    </script>
+}
+

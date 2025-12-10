@@ -1,0 +1,137 @@
+@{
+    ViewData["Title"] = "Quản lý Kho";
+    var products = ViewBag.Products as List<PCSTORE.Models.Product> ?? new List<PCSTORE.Models.Product>();
+    var inventories = ViewBag.Inventories as List<PCSTORE.Models.Inventory> ?? new List<PCSTORE.Models.Inventory>();
+    var suppliers = ViewBag.Suppliers as List<PCSTORE.Models.Supplier> ?? new List<PCSTORE.Models.Supplier>();
+    var lowStockProducts = ViewBag.LowStockProducts as List<PCSTORE.Models.Product> ?? new List<PCSTORE.Models.Product>();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="mb-0"><i class="fas fa-warehouse me-2"></i>Quản lý Kho</h4>
+        <small class="text-muted">Tồn kho sắp hết: @lowStockProducts.Count sản phẩm</small>
+    </div>
+    <a href="@Url.Action("SupplierForm", "AdminInventory")" class="btn btn-danger">
+        <i class="fas fa-plus"></i> Thêm nhà cung cấp
+    </a>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white border-bottom">
+                <h5 class="mb-0"><i class="fas fa-box-open text-warning me-2"></i>Nhập hàng</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" action="@Url.Action("ImportStock", "AdminInventory")">
+                    <div class="mb-3">
+                        <label class="form-label">Chọn sản phẩm</label>
+                        <select name="productId" class="form-select" required>
+                            <option value="">-- Chọn sản phẩm --</option>
+                            @foreach (var product in products)
+                            {
+                                <option value="@product.Id">@product.Name (Tồn: @product.Stock)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Số lượng nhập</label>
+                        <input type="number" name="quantity" class="form-control" min="1" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nhà cung cấp</label>
+                        <input type="text" name="supplierName" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ghi chú</label>
+                        <textarea name="notes" class="form-control" rows="2"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-danger w-100">
+                        <i class="fas fa-plus"></i> Nhập hàng
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white border-bottom">
+                <h5 class="mb-0"><i class="fas fa-exclamation-triangle text-danger me-2"></i>Tồn kho sắp hết</h5>
+            </div>
+            <div class="card-body">
+                @if (lowStockProducts.Count > 0)
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th>Tồn kho</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var product in lowStockProducts)
+                                {
+                                    <tr>
+                                        <td>@product.Name</td>
+                                        <td><span class="badge bg-danger">@product.Stock</span></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted text-center">Không có sản phẩm nào sắp hết hàng</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white border-bottom">
+        <h5 class="mb-0"><i class="fas fa-history me-2"></i>Lịch sử nhập/xuất kho</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Ngày</th>
+                        <th>Sản phẩm</th>
+                        <th>Số lượng</th>
+                        <th>Loại</th>
+                        <th>Nhà cung cấp</th>
+                        <th>Người thực hiện</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var inv in inventories)
+                    {
+                        <tr>
+                            <td>@inv.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>@inv.ProductName</td>
+                            <td>
+                                @if (inv.Type == "Import")
+                                {
+                                    <span class="badge bg-success">+@inv.Quantity</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">-@inv.Quantity</span>
+                                }
+                            </td>
+                            <td>@inv.Type</td>
+                            <td>@inv.SupplierName</td>
+                            <td>@inv.CreatedBy</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

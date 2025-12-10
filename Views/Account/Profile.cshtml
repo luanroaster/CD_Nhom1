@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "Tài khoản của tôi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0"><i class="fas fa-user-circle me-2"></i>Thông tin tài khoản</h4>
+                </div>
+                <div class="card-body p-4">
+                    <p class="mb-2"><strong>Họ tên:</strong> @ViewBag.CustomerName</p>
+                    @if (!string.IsNullOrEmpty(ViewBag.CustomerEmail as string))
+                    {
+                        <p class="mb-2"><strong>Email:</strong> @ViewBag.CustomerEmail</p>
+                    }
+                    <p class="text-muted small">Bạn đang đăng nhập bằng tài khoản khách hàng. Khi đặt hàng, hệ thống sẽ sử dụng thông tin này.</p>
+
+                    <form asp-action="Logout" asp-controller="Account" method="post" class="mt-3">
+                        <button type="submit" class="btn btn-outline-danger w-100">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

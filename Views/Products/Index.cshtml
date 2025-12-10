@@ -1,0 +1,449 @@
+@model PCSTORE.Controllers.ProductListViewModel
+@{
+    ViewData["Title"] = Model.CategoryName;
+}
+
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">@Model.CategoryName</li>
+                </ol>
+            </nav>
+            <h1 class="mb-3">@Model.CategoryName</h1>
+            <p class="text-muted">Tìm thấy <strong>@Model.Products.Count</strong> sản phẩm</p>
+        </div>
+    </div>
+
+    <!-- Bộ lọc -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-header text-white" style="background-color: #dc3545;">
+                    <h6 class="mb-0"><i class="fas fa-filter"></i> Bộ lọc</h6>
+                </div>
+                <div class="card-body">
+                    <form method="get" action="@Url.Action(Model.CategoryName == "CPU - Bộ vi xử lý" ? "CPU" : "Index", "Products")">
+                        @if (Model.CategoryName.Contains("CPU"))
+                        {
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Hãng sản xuất</label>
+                                <div class="form-check">
+                                    @{
+                                        var brandAllChecked = ViewBag.Brand == null ? "checked" : "";
+                                    }
+                                    <input class="form-check-input" type="radio" name="brand" id="brandAll" value="" @brandAllChecked>
+                                    <label class="form-check-label" for="brandAll">Tất cả</label>
+                                </div>
+                                <div class="form-check">
+                                    @{
+                                        var brandIntelChecked = ViewBag.Brand?.ToString() == "Intel" ? "checked" : "";
+                                    }
+                                    <input class="form-check-input" type="radio" name="brand" id="brandIntel" value="Intel" @brandIntelChecked>
+                                    <label class="form-check-label" for="brandIntel">CPU Intel</label>
+                                </div>
+                                <div class="form-check">
+                                    @{
+                                        var brandAMDChecked = ViewBag.Brand?.ToString() == "AMD" ? "checked" : "";
+                                    }
+                                    <input class="form-check-input" type="radio" name="brand" id="brandAMD" value="AMD" @brandAMDChecked>
+                                    <label class="form-check-label" for="brandAMD">CPU AMD</label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Socket</label>
+                                @{
+                                    var socketLGA1700 = ViewBag.Socket?.ToString() == "LGA1700" ? "selected" : "";
+                                    var socketLGA1200 = ViewBag.Socket?.ToString() == "LGA1200" ? "selected" : "";
+                                    var socketAM5 = ViewBag.Socket?.ToString() == "AM5" ? "selected" : "";
+                                    var socketAM4 = ViewBag.Socket?.ToString() == "AM4" ? "selected" : "";
+                                }
+                                <select class="form-select" name="socket">
+                                    <option value="">Tất cả</option>
+                                    @if (ViewBag.Socket?.ToString() == "LGA1700")
+                                    {
+                                        <option value="LGA1700" selected>LGA 1700</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="LGA1700">LGA 1700</option>
+                                    }
+                                    @if (ViewBag.Socket?.ToString() == "LGA1200")
+                                    {
+                                        <option value="LGA1200" selected>LGA 1200</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="LGA1200">LGA 1200</option>
+                                    }
+                                    @if (ViewBag.Socket?.ToString() == "AM5")
+                                    {
+                                        <option value="AM5" selected>AM5</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="AM5">AM5</option>
+                                    }
+                                    @if (ViewBag.Socket?.ToString() == "AM4")
+                                    {
+                                        <option value="AM4" selected>AM4</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="AM4">AM4</option>
+                                    }
+                                </select>
+                            </div>
+                        }
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Khoảng giá</label>
+                            @{
+                                var priceRange0 = ViewBag.PriceRange?.ToString() == "0-5000000" ? "selected" : "";
+                                var priceRange1 = ViewBag.PriceRange?.ToString() == "5000000-10000000" ? "selected" : "";
+                                var priceRange2 = ViewBag.PriceRange?.ToString() == "10000000-20000000" ? "selected" : "";
+                                var priceRange3 = ViewBag.PriceRange?.ToString() == "20000000-50000000" ? "selected" : "";
+                                var priceRange4 = ViewBag.PriceRange?.ToString() == "50000000-999999999" ? "selected" : "";
+                            }
+                            <select class="form-select" name="priceRange">
+                                <option value="">Tất cả</option>
+                                @if (ViewBag.PriceRange?.ToString() == "0-5000000")
+                                {
+                                    <option value="0-5000000" selected>Dưới 5 triệu</option>
+                                }
+                                else
+                                {
+                                    <option value="0-5000000">Dưới 5 triệu</option>
+                                }
+                                @if (ViewBag.PriceRange?.ToString() == "5000000-10000000")
+                                {
+                                    <option value="5000000-10000000" selected>5 - 10 triệu</option>
+                                }
+                                else
+                                {
+                                    <option value="5000000-10000000">5 - 10 triệu</option>
+                                }
+                                @if (ViewBag.PriceRange?.ToString() == "10000000-20000000")
+                                {
+                                    <option value="10000000-20000000" selected>10 - 20 triệu</option>
+                                }
+                                else
+                                {
+                                    <option value="10000000-20000000">10 - 20 triệu</option>
+                                }
+                                @if (ViewBag.PriceRange?.ToString() == "20000000-50000000")
+                                {
+                                    <option value="20000000-50000000" selected>20 - 50 triệu</option>
+                                }
+                                else
+                                {
+                                    <option value="20000000-50000000">20 - 50 triệu</option>
+                                }
+                                @if (ViewBag.PriceRange?.ToString() == "50000000-999999999")
+                                {
+                                    <option value="50000000-999999999" selected>Trên 50 triệu</option>
+                                }
+                                else
+                                {
+                                    <option value="50000000-999999999">Trên 50 triệu</option>
+                                }
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Sắp xếp</label>
+                            @{
+                                var sortName = ViewBag.SortBy?.ToString() == "name" ? "selected" : "";
+                                var sortNameDesc = ViewBag.SortBy?.ToString() == "name-desc" ? "selected" : "";
+                                var sortPriceAsc = ViewBag.SortBy?.ToString() == "price-asc" ? "selected" : "";
+                                var sortPriceDesc = ViewBag.SortBy?.ToString() == "price-desc" ? "selected" : "";
+                            }
+                            <select class="form-select" name="sortBy">
+                                @if (ViewBag.SortBy?.ToString() == "name" || ViewBag.SortBy == null)
+                                {
+                                    <option value="name" selected>Tên A-Z</option>
+                                }
+                                else
+                                {
+                                    <option value="name">Tên A-Z</option>
+                                }
+                                @if (ViewBag.SortBy?.ToString() == "name-desc")
+                                {
+                                    <option value="name-desc" selected>Tên Z-A</option>
+                                }
+                                else
+                                {
+                                    <option value="name-desc">Tên Z-A</option>
+                                }
+                                @if (ViewBag.SortBy?.ToString() == "price-asc")
+                                {
+                                    <option value="price-asc" selected>Giá tăng dần</option>
+                                }
+                                else
+                                {
+                                    <option value="price-asc">Giá tăng dần</option>
+                                }
+                                @if (ViewBag.SortBy?.ToString() == "price-desc")
+                                {
+                                    <option value="price-desc" selected>Giá giảm dần</option>
+                                }
+                                else
+                                {
+                                    <option value="price-desc">Giá giảm dần</option>
+                                }
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn w-100 text-white" style="background-color: #dc3545;">
+                            <i class="fas fa-search"></i> Áp dụng
+                        </button>
+                        <a href="@Url.Action(Model.CategoryName == "CPU - Bộ vi xử lý" ? "CPU" : "Index", "Products")" class="btn btn-outline-secondary w-100 mt-2">
+                            <i class="fas fa-redo"></i> Làm mới
+                        </a>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Chính sách -->
+            @if (Model.CategoryName.Contains("CPU"))
+            {
+                <div class="card mt-3">
+                    <div class="card-header text-white" style="background-color: #000;">
+                        <h6 class="mb-0"><i class="fas fa-info-circle"></i> Chính sách</h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0 small">
+                            <li class="mb-2"><i class="fas fa-check text-danger me-2"></i>Hoàn tiền 100% nếu không đúng đơn hàng</li>
+                            <li class="mb-2"><i class="fas fa-check text-danger me-2"></i>Giao hàng tận nơi mọi miền</li>
+                            <li class="mb-2"><i class="fas fa-check text-danger me-2"></i>Bảo hành tại nhà</li>
+                            <li class="mb-2"><i class="fas fa-check text-danger me-2"></i>Đổi trả trong 15 ngày</li>
+                            <li class="mb-2"><i class="fas fa-check text-danger me-2"></i>Hỗ trợ trả góp 0%</li>
+                        </ul>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Danh sách sản phẩm -->
+        <div class="col-md-9">
+            <!-- Thông tin danh mục -->
+            @if (Model.CategoryName.Contains("CPU"))
+            {
+                <div class="alert alert-info mb-4">
+                    <h5 class="alert-heading"><i class="fas fa-microchip"></i> CPU - Bộ vi xử lý</h5>
+                    <p class="mb-2">CPU (Central Processing Unit) là bộ vi xử lý trung tâm, được xem như bộ não của máy tính. CPU có nhiệm vụ xử lý tất cả các thông tin và lệnh mà máy tính nhận được.</p>
+                    <hr>
+                    <p class="mb-0 small"><strong>Lưu ý:</strong> Khi chọn CPU, bạn cần kiểm tra socket tương thích với mainboard. Các socket phổ biến: LGA 1700 (Intel 12th/13th gen), LGA 1200 (Intel 10th/11th gen), AM5 (AMD Ryzen 7000), AM4 (AMD Ryzen 5000/3000).</p>
+                </div>
+            }
+            
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <strong>Tìm thấy <span class="text-danger">@Model.Products.Count</span> sản phẩm</strong>
+                </div>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-secondary active" onclick="changeView('grid')">
+                        <i class="fas fa-th"></i> Lưới
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="changeView('list')">
+                        <i class="fas fa-list"></i> Danh sách
+                    </button>
+                </div>
+            </div>
+            
+            <div class="row g-4" id="productList">
+                @foreach (var product in Model.Products)
+                {
+                    <div class="col-6 col-md-4 col-lg-3 product-item" 
+                         data-price="@product.Price" 
+                         data-name="@product.Name.ToLower()">
+                        <div class="card h-100 shadow-sm hover-effect">
+                            <div class="position-relative">
+                                <img src="@(string.IsNullOrEmpty(product.ImageUrl) ? "https://via.placeholder.com/300x300?text=No+Image" : product.ImageUrl)" 
+                                     class="card-img-top product-image-square" 
+                                     alt="@product.Name"
+                                     onerror="this.onerror=null; this.src='https://via.placeholder.com/300x300?text=No+Image';"
+                                     loading="lazy">
+                                @if (product.OldPrice.HasValue && product.OldPrice > product.Price)
+                                {
+                                    <span class="badge bg-danger position-absolute top-0 end-0 m-2">
+                                        -@((int)((1 - (double)(product.Price / product.OldPrice.Value)) * 100))%
+                                    </span>
+                                }
+                                @if (product.IsFeatured)
+                                {
+                                    <span class="badge bg-warning position-absolute top-0 start-0 m-2">
+                                        <i class="fas fa-star"></i> Nổi bật
+                                    </span>
+                                }
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <h6 class="card-title" style="min-height: 48px; font-size: 0.9rem;">
+                                    @product.Name
+                                </h6>
+                                <div class="price-section mb-2">
+                                    <div class="text-danger fw-bold fs-5">
+                                        @string.Format("{0:N0}", product.Price) đ
+                                    </div>
+                                    @if (product.OldPrice.HasValue && product.OldPrice > product.Price)
+                                    {
+                                        <div class="text-muted text-decoration-line-through small">
+                                            @string.Format("{0:N0}", product.OldPrice) đ
+                                        </div>
+                                    }
+                                </div>
+                                @if (!string.IsNullOrEmpty(product.Description))
+                                {
+                                    <p class="card-text small text-muted mb-2" style="font-size: 0.8rem;">
+                                        @(product.Description.Length > 50 ? product.Description.Substring(0, 50) + "..." : product.Description)
+                                    </p>
+                                }
+                                <div class="mt-auto">
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-sm text-white" style="background-color: #dc3545;" onclick="addToCart(@product.Id, '@product.Name', @product.Price)">
+                                            <i class="fas fa-cart-plus"></i> Thêm vào giỏ
+                                        </button>
+                                        <button class="btn btn-outline-secondary btn-sm" onclick="viewDetail(@product.Id)">
+                                            <i class="fas fa-eye"></i> Xem chi tiết
+                                        </button>
+                                    </div>
+                                    <div class="mt-2">
+                                        @if (product.Stock > 0)
+                                        {
+                                            <small class="text-success">
+                                                <i class="fas fa-check-circle"></i> Còn hàng (@product.Stock)
+                                            </small>
+                                        }
+                                        else
+                                        {
+                                            <small class="text-danger">
+                                                <i class="fas fa-times-circle"></i> Hết hàng
+                                            </small>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @if (Model.Products.Count == 0)
+            {
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle fa-3x mb-3"></i>
+                    <h5>Chưa có sản phẩm nào</h5>
+                    <p>Hiện tại chưa có sản phẩm trong danh mục này.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function changeView(viewType) {
+            const productList = document.getElementById('productList');
+            const products = productList.querySelectorAll('.product-item');
+            
+            if (viewType === 'list') {
+                productList.classList.remove('row');
+                productList.classList.add('list-view');
+                products.forEach(product => {
+                    product.classList.remove('col-6', 'col-md-4', 'col-lg-3');
+                    product.classList.add('col-12', 'mb-3');
+                });
+            } else {
+                productList.classList.remove('list-view');
+                productList.classList.add('row');
+                products.forEach(product => {
+                    product.classList.remove('col-12');
+                    product.classList.add('col-6', 'col-md-4', 'col-lg-3');
+                });
+            }
+            
+            // Update button states
+            document.querySelectorAll('.btn-group button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+        
+        function addToCart(productId, productName, price) {
+            // Sử dụng function từ cart.js để thêm vào giỏ hàng qua server
+            if (typeof window.addToCart === 'function') {
+                window.addToCart(productId, productName, price, 1);
+            } else {
+                // Fallback: sử dụng localStorage nếu cart.js chưa load
+                let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                const existingItem = cart.find(item => item.id === productId);
+                
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                } else {
+                    cart.push({
+                        id: productId,
+                        name: productName,
+                        price: price,
+                        quantity: 1
+                    });
+                }
+                
+                localStorage.setItem('cart', JSON.stringify(cart));
+                
+                // Update cart badge
+                const cartBadge = document.getElementById('cartBadge');
+                if (cartBadge) {
+                    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+                    cartBadge.textContent = totalItems;
+                    cartBadge.style.display = totalItems > 0 ? 'inline-block' : 'none';
+                }
+                
+                // Show notification
+                const notification = document.createElement('div');
+                notification.className = 'alert alert-success position-fixed top-0 start-50 translate-middle-x mt-3';
+                notification.style.zIndex = '9999';
+                notification.style.minWidth = '300px';
+                notification.style.textAlign = 'center';
+                notification.innerHTML = '<i class="fas fa-check-circle me-2"></i> Đã thêm "' + productName + '" vào giỏ hàng!';
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.transition = 'opacity 0.5s';
+                    notification.style.opacity = '0';
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 500);
+                }, 3000);
+            }
+        }
+        
+        function viewDetail(productId) {
+            // Có thể mở modal hoặc chuyển đến trang chi tiết
+            window.location.href = '/Products/Detail/' + productId;
+        }
+        
+        // List view styles
+        const style = document.createElement('style');
+        style.textContent = `
+            .list-view .product-item .card {
+                flex-direction: row;
+            }
+            .list-view .product-item .card img {
+                width: 200px;
+                height: 200px;
+                object-fit: cover;
+            }
+            .list-view .product-item .card-body {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+}
+

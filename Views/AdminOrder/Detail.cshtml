@@ -1,0 +1,152 @@
+@model PCSTORE.Models.Order
+
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="mb-0"><i class="fas fa-shopping-cart me-2"></i>Chi tiết đơn hàng</h4>
+        <small class="text-muted">Mã đơn: <strong>@Model.OrderCode</strong></small>
+    </div>
+    <a href="@Url.Action("Index", "AdminOrder")" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Quay lại
+    </a>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom">
+                <h5 class="mb-0">Sản phẩm trong đơn</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th>Giá</th>
+                                <th>Số lượng</th>
+                                <th>Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Items)
+                            {
+                                <tr>
+                                    <td>@item.ProductName</td>
+                                    <td>@string.Format("{0:N0}", item.Price) đ</td>
+                                    <td>@item.Quantity</td>
+                                    <td><strong>@string.Format("{0:N0}", item.SubTotal) đ</strong></td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="3" class="text-end">Tổng cộng:</th>
+                                <th class="text-danger">@string.Format("{0:N0}", Model.TotalAmount) đ</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white border-bottom">
+                <h5 class="mb-0">Thông tin khách hàng</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Tên:</strong> @Model.CustomerName</p>
+                <p><strong>Điện thoại:</strong> @Model.CustomerPhone</p>
+                <p><strong>Email:</strong> @Model.CustomerEmail</p>
+                <p><strong>Địa chỉ:</strong> @Model.CustomerAddress</p>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-white border-bottom">
+                <h5 class="mb-0">Cập nhật trạng thái</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" action="@Url.Action("UpdateStatus", "AdminOrder")">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="mb-3">
+                        <label class="form-label">Trạng thái đơn hàng</label>
+                        <select name="status" class="form-select">
+                            @if (Model.Status == "Chờ duyệt")
+                            {
+                                <option value="Chờ duyệt" selected>Chờ duyệt</option>
+                            }
+                            else
+                            {
+                                <option value="Chờ duyệt">Chờ duyệt</option>
+                            }
+                            @if (Model.Status == "Đang giao")
+                            {
+                                <option value="Đang giao" selected>Đang giao</option>
+                            }
+                            else
+                            {
+                                <option value="Đang giao">Đang giao</option>
+                            }
+                            @if (Model.Status == "Hoàn thành")
+                            {
+                                <option value="Hoàn thành" selected>Hoàn thành</option>
+                            }
+                            else
+                            {
+                                <option value="Hoàn thành">Hoàn thành</option>
+                            }
+                            @if (Model.Status == "Đã hủy")
+                            {
+                                <option value="Đã hủy" selected>Đã hủy</option>
+                            }
+                            else
+                            {
+                                <option value="Đã hủy">Đã hủy</option>
+                            }
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-danger w-100">
+                        <i class="fas fa-save"></i> Cập nhật
+                    </button>
+                </form>
+
+                <hr>
+
+                <form method="post" action="@Url.Action("UpdatePaymentStatus", "AdminOrder")">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="mb-3">
+                        <label class="form-label">Trạng thái thanh toán</label>
+                        <select name="paymentStatus" class="form-select">
+                            @if (Model.PaymentStatus == "Chưa thanh toán")
+                            {
+                                <option value="Chưa thanh toán" selected>Chưa thanh toán</option>
+                            }
+                            else
+                            {
+                                <option value="Chưa thanh toán">Chưa thanh toán</option>
+                            }
+                            @if (Model.PaymentStatus == "Đã thanh toán")
+                            {
+                                <option value="Đã thanh toán" selected>Đã thanh toán</option>
+                            }
+                            else
+                            {
+                                <option value="Đã thanh toán">Đã thanh toán</option>
+                            }
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-money-bill"></i> Cập nhật
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

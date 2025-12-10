@@ -1,0 +1,77 @@
+@{
+    ViewData["Title"] = "Quản lý Banner";
+    var banners = ViewBag.Banners as List<PCSTORE.Models.Banner> ?? new List<PCSTORE.Models.Banner>();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="mb-0"><i class="fas fa-images me-2"></i>Quản lý Banner</h4>
+        <small class="text-muted">Tổng số: @banners.Count banner</small>
+    </div>
+    <div class="btn-group" role="group">
+        <a href="@Url.Action("BannerForm", "AdminPromotion")" class="btn btn-danger">
+            <i class="fas fa-plus"></i> Thêm banner
+        </a>
+        <a href="@Url.Action("Promotions", "AdminPromotion")" class="btn btn-outline-secondary">
+            <i class="fas fa-tags"></i> Quản lý Khuyến mãi
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Hình ảnh</th>
+                        <th>Tiêu đề</th>
+                        <th>Mô tả</th>
+                        <th>Link</th>
+                        <th>Thứ tự</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var banner in banners)
+                    {
+                        <tr>
+                            <td>
+                                @if (!string.IsNullOrEmpty(banner.ImageUrl))
+                                {
+                                    <img src="@banner.ImageUrl" alt="@banner.Title" style="max-width: 100px; max-height: 60px; object-fit: cover;" />
+                                }
+                            </td>
+                            <td>@banner.Title</td>
+                            <td>@banner.Description</td>
+                            <td><a href="@banner.LinkUrl" target="_blank">@banner.LinkUrl</a></td>
+                            <td>@banner.DisplayOrder</td>
+                            <td>
+                                @if (banner.IsActive)
+                                {
+                                    <span class="badge bg-success">Hoạt động</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Tắt</span>
+                                }
+                            </td>
+                            <td>
+                                <a href="@Url.Action("BannerForm", "AdminPromotion", new { id = banner.Id })" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i> Sửa
+                                </a>
+                                <form method="post" action="@Url.Action("DeleteBanner", "AdminPromotion", new { id = banner.Id })" style="display: inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa banner này?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-trash"></i> Xóa
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

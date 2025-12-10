@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PC STORE - Cửa hàng linh kiện máy tính</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/chatbox.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/PCSTORE.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <!-- Top Bar với Logo và Search -->
+    <header class="sticky-top">
+        <!-- Top Bar -->
+        <div class="top-header bg-white py-2">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-md-2">
+                        <a class="navbar-brand text-dark d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index" style="text-decoration: none;">
+                            <div class="logo-circle bg-black text-danger rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px; font-weight: bold; font-size: 18px;">
+                                NC
+                            </div>
+                            <span class="fw-bold text-danger" style="font-size: 18px;">PC STORE</span>
+                        </a>
+                    </div>
+                    <div class="col-md-1 text-center">
+                        <i class="fas fa-map-marker-alt fa-lg text-danger"></i>
+                    </div>
+                    <div class="col-md-3">
+                        <form class="d-flex" role="search">
+                            <input class="form-control" type="search" placeholder="Bạn cần tìm gì?" aria-label="Search" style="border-radius: 25px 0 0 25px; border: 1px solid #ced4da; font-size: 0.9rem;">
+                            <button class="btn btn-danger text-white" type="submit" style="border-radius: 0 25px 25px 0; padding: 0.375rem 1rem;">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-end align-items-center" style="flex-wrap: nowrap;">
+                            <a href="@Url.Action("Index", "BuildPC")" class="text-dark text-decoration-none me-2 d-flex flex-column align-items-center fw-medium" style="min-width: 70px;">
+                                <i class="fas fa-desktop mb-1 text-danger" style="font-size: 1.1rem;"></i>
+                                <span style="font-size: 0.75rem; text-align: center; line-height: 1.2;">Xây dựng cấu hình</span>
+                            </a>
+                            <a href="@Url.Action("BuildAI", "BuildPC")" class="text-dark text-decoration-none me-2 d-flex flex-column align-items-center fw-medium" style="min-width: 70px;">
+                                <i class="fas fa-robot mb-1 text-danger" style="font-size: 1.1rem;"></i>
+                                <span style="font-size: 0.75rem; text-align: center; line-height: 1.2;">Cấu hình AI</span>
+                            </a>
+                            <a href="#" class="text-dark text-decoration-none me-2 d-flex flex-column align-items-center fw-medium" style="min-width: 70px;">
+                                <i class="fas fa-phone mb-1 text-danger" style="font-size: 1.1rem;"></i>
+                                <span style="font-size: 0.75rem; text-align: center; line-height: 1.2;">Khách hàng liên hệ</span>
+                            </a>
+                            <a href="#" class="text-dark text-decoration-none me-2 d-flex flex-column align-items-center fw-medium" style="min-width: 70px;">
+                                <i class="fas fa-newspaper mb-1 text-danger" style="font-size: 1.1rem;"></i>
+                                <span style="font-size: 0.75rem; text-align: center; line-height: 1.2;">Tin tức công nghệ</span>
+                            </a>
+                            <a href="@Url.Action("Index", "Cart")" class="text-dark text-decoration-none me-2 d-flex flex-column align-items-center position-relative fw-medium" style="min-width: 70px;" id="cartLink">
+                                <i class="fas fa-shopping-cart mb-1 text-danger" style="font-size: 1.1rem;"></i>
+                                <span style="font-size: 0.75rem; text-align: center; line-height: 1.2;">Giỏ hàng</span>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 9px; margin-left: 3px;" id="cartBadge">0</span>
+                            </a>
+                            <a href="@Url.Action("Index", "Account")" class="text-dark text-decoration-none d-flex flex-column align-items-center fw-medium" style="min-width: 70px;">
+                                <i class="fas fa-user mb-1 text-danger" style="font-size: 1.1rem;"></i>
+                                <span style="font-size: 0.75rem; text-align: center; line-height: 1.2;">Tài khoản</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Bar - Main Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary-dark py-2" style="background-color: #dc3545 !important;">
+            <div class="container-fluid">
+                <button class="btn btn-light me-3 d-flex align-items-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#categoryMenu">
+                    <i class="fas fa-bars me-2"></i>
+                    <span class="fw-bold">DANH MỤC SẢN PHẨM</span>
+                </button>
+                <div class="navbar-nav flex-row">
+                    <a class="nav-link text-white d-flex align-items-center me-3" asp-controller="Products" asp-action="PC">
+                        <i class="fas fa-desktop me-2"></i>
+                        <span>PC</span>
+                        <i class="fas fa-chevron-down ms-2" style="font-size: 10px;"></i>
+                    </a>
+                    <a class="nav-link text-white d-flex align-items-center me-3" asp-controller="Products" asp-action="PCAI">
+                        <i class="fas fa-desktop me-2"></i>
+                        <span>PC AI</span>
+                        <i class="fas fa-chevron-down ms-2" style="font-size: 10px;"></i>
+                    </a>
+                    <a class="nav-link text-white d-flex align-items-center me-3" asp-controller="Products" asp-action="LinhKienPC">
+                        <i class="fas fa-desktop me-2"></i>
+                        <span>Linh kiện PC</span>
+                        <i class="fas fa-chevron-down ms-2" style="font-size: 10px;"></i>
+                    </a>
+                    <a class="nav-link text-white d-flex align-items-center me-3" asp-controller="Products" asp-action="Monitor">
+                        <i class="fas fa-tv me-2"></i>
+                        <span>Màn hình</span>
+                        <i class="fas fa-chevron-down ms-2" style="font-size: 10px;"></i>
+                    </a>
+                    <a class="nav-link text-white d-flex align-items-center me-3" asp-controller="Products" asp-action="Laptop">
+                        <i class="fas fa-laptop me-2"></i>
+                        <span>Laptop</span>
+                        <i class="fas fa-chevron-down ms-2" style="font-size: 10px;"></i>
+                    </a>
+                    <a class="nav-link text-white d-flex align-items-center me-3" asp-controller="Products" asp-action="ThietBiVanPhong">
+                        <i class="fas fa-print me-2"></i>
+                        <span>Thiết bị văn phòng</span>
+                        <i class="fas fa-chevron-down ms-2" style="font-size: 10px;"></i>
+                    </a>
+                    <a class="nav-link text-white d-flex align-items-center" asp-controller="Products" asp-action="PhimChuotGheGear">
+                        <i class="fas fa-mouse me-2"></i>
+                        <i class="fas fa-snowflake me-2"></i>
+                        <span>Phím chuột ghế gear</span>
+                        <i class="fas fa-chevron-down ms-2" style="font-size: 10px;"></i>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Offcanvas Menu cho Danh mục sản phẩm -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="categoryMenu" aria-labelledby="categoryMenuLabel">
+        <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="categoryMenuLabel">DANH MỤC SẢN PHẨM</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <h6 class="fw-bold text-primary">Linh kiện PC</h6>
+                </li>
+                <li class="list-group-item">
+                    <a class="text-decoration-none" href="@Url.Action("CPU", "Products")" onclick="closeOffcanvas()">
+                        <i class="fas fa-microchip me-2"></i>CPU - Bộ vi xử lý
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a class="text-decoration-none" href="@Url.Action("Mainboard", "Products")" onclick="closeOffcanvas()">
+                        <i class="fas fa-server me-2"></i>Mainboard - Bo mạch chủ
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a class="text-decoration-none" href="@Url.Action("RAM", "Products")" onclick="closeOffcanvas()">
+                        <i class="fas fa-memory me-2"></i>RAM - Bộ nhớ trong
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a class="text-decoration-none" href="@Url.Action("GPU", "Products")" onclick="closeOffcanvas()">
+                        <i class="fas fa-desktop me-2"></i>GPU - Card đồ họa
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a class="text-decoration-none" href="@Url.Action("PSU", "Products")" onclick="closeOffcanvas()">
+                        <i class="fas fa-plug me-2"></i>PSU - Nguồn máy tính
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a class="text-decoration-none" href="@Url.Action("SSD", "Products")" onclick="closeOffcanvas()">
+                        <i class="fas fa-hdd me-2"></i>SSD - Ổ cứng SSD
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a class="text-decoration-none" href="@Url.Action("HDD", "Products")" onclick="closeOffcanvas()">
+                        <i class="fas fa-hdd me-2"></i>HDD - Ổ cứng HDD
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a class="text-decoration-none" href="@Url.Action("Case", "Products")" onclick="closeOffcanvas()">
+                        <i class="fas fa-box me-2"></i>Case - Vỏ máy tính
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <h6 class="fw-bold text-primary mt-3">Tản nhiệt</h6>
+                </li>
+                <li class="list-group-item">
+                    <a class="text-decoration-none" href="@Url.Action("Fan", "Products")" onclick="closeOffcanvas()">
+                        <i class="fas fa-fan me-2"></i>Fan tản nhiệt
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a class="text-decoration-none" href="@Url.Action("WaterCooling", "Products")" onclick="closeOffcanvas()">
+                        <i class="fas fa-water me-2"></i>Tản nhiệt nước
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a class="text-decoration-none" href="@Url.Action("AirCooling", "Products")" onclick="closeOffcanvas()">
+                        <i class="fas fa-wind me-2"></i>Tản nhiệt khí
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <h6 class="fw-bold text-primary mt-3">Thiết bị ngoại vi</h6>
+                </li>
+                <li class="list-group-item">
+                    <a class="text-decoration-none" href="@Url.Action("Monitor", "Products")" onclick="closeOffcanvas()">
+                        <i class="fas fa-tv me-2"></i>Màn hình máy tính
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a class="text-decoration-none" href="@Url.Action("Keyboard", "Products")" onclick="closeOffcanvas()">
+                        <i class="fas fa-keyboard me-2"></i>Bàn phím
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a class="text-decoration-none" href="@Url.Action("Mouse", "Products")" onclick="closeOffcanvas()">
+                        <i class="fas fa-mouse me-2"></i>Chuột
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a class="text-decoration-none" href="@Url.Action("Speaker", "Products")" onclick="closeOffcanvas()">
+                        <i class="fas fa-volume-up me-2"></i>Loa
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a class="text-decoration-none" href="@Url.Action("Headphone", "Products")" onclick="closeOffcanvas()">
+                        <i class="fas fa-headphones me-2"></i>Tai nghe
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white mt-5">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 class="fw-bold mb-3"><i class="fas fa-desktop me-2"></i>PC STORE</h5>
+                    <p>Chuyên cung cấp linh kiện máy tính chính hãng, giá tốt. Cam kết chất lượng sản phẩm và dịch vụ chăm sóc khách hàng tận tâm.</p>
+                    <div class="social-links">
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook-f fa-lg"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-youtube fa-lg"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-zalo fa-lg"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h6 class="fw-bold mb-3">VỀ CHÚNG TÔI</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white-50 text-decoration-none">Giới thiệu</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none">Tin tức</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none">Tuyển dụng</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none">Liên hệ</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h6 class="fw-bold mb-3">CHÍNH SÁCH</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white-50 text-decoration-none">Chính sách bảo hành</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none">Chính sách đổi trả</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none">Chính sách vận chuyển</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none">Chính sách thanh toán</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <h6 class="fw-bold mb-3">LIÊN HỆ</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>123 Đường ABC, Quận XYZ, TP.HCM</li>
+                        <li class="mb-2"><i class="fas fa-phone me-2"></i>1900 1234</li>
+                        <li class="mb-2"><i class="fas fa-envelope me-2"></i>info@pcstore.vn</li>
+                        <li><i class="fas fa-clock me-2"></i>8:00 - 22:00 (Tất cả các ngày)</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="bg-white">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <p class="mb-0">&copy; 2025 PC STORE. Tất cả quyền được bảo lưu.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/cart.js" asp-append-version="true"></script>
+    <script src="~/js/chatbox.js" asp-append-version="true"></script>
+    
+    <!-- Facebook Messenger SDK -->
+    <div id="fb-root"></div>
+    <script>
+        window.fbAsyncInit = function() {
+            FB.init({
+                xfbml: true,
+                version: 'v18.0'
+            });
+        };
+
+        (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = 'https://connect.facebook.net/vi_VN/sdk/xfbml.customerchat.js';
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
+    
+    <!-- Facebook Messenger Customer Chat Plugin -->
+    @{
+        var fbPageId = Configuration["FacebookPageId"] ?? "YOUR_PAGE_ID";
+    }
+    @if (fbPageId != "YOUR_PAGE_ID")
+    {
+        <div class="fb-customerchat"
+             attribution="setup_tool"
+             page_id="@fbPageId"
+             theme_color="#dc3545"
+             logged_in_greeting="Xin chào! Chúng tôi có thể giúp gì cho bạn?"
+             logged_out_greeting="Xin chào! Chúng tôi có thể giúp gì cho bạn?">
+        </div>
+    }
+    
+    <script>
+        function closeOffcanvas() {
+            const offcanvasElement = document.getElementById('categoryMenu');
+            const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
+            if (offcanvasInstance) {
+                offcanvasInstance.hide();
+            }
+        }
+        
+        // Messenger button click handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const messengerButton = document.getElementById('messengerButton');
+            if (messengerButton) {
+                messengerButton.addEventListener('click', function() {
+                    var pageId = '@fbPageId';
+                    // Trigger Facebook Messenger chat
+                    if (typeof FB !== 'undefined' && FB.CustomerChat) {
+                        FB.CustomerChat.showDialog();
+                    } else {
+                        // Fallback: mở Messenger web
+                        if (pageId && pageId !== 'YOUR_PAGE_ID') {
+                            window.open('https://m.me/' + pageId, '_blank');
+                        } else {
+                            alert('Vui lòng cấu hình Facebook Page ID trong appsettings.json');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+    
+    <!-- Chatbox Buttons Group -->
+    <div class="chatbox-buttons-group">
+        @{
+            var zaloId = Configuration["ZaloId"] ?? "YOUR_ZALO_ID";
+            var facebookPageId = Configuration["FacebookPageId"] ?? "YOUR_PAGE_ID";
+        }
+        <!-- Zalo Button -->
+        <a href="https://zalo.me/@zaloId" target="_blank" class="chatbox-button chatbox-zalo" aria-label="Chat Zalo" title="Chat Zalo">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 5.58 2 10c0 2.5 1.2 4.75 3.07 6.27L4.93 20.5l4.71-1.44C10.5 19.2 11.22 19.3 12 19.3c5.52 0 10-3.58 10-8s-4.48-8-10-8zm0 14.3c-.72 0-1.4-.1-2.05-.27l-.35-.1-2.5.77.76-2.43-.18-.35C6.8 12.8 6 11.5 6 10c0-3.31 2.69-6 6-6s6 2.69 6 6-2.69 6-6 6z"/>
+            </svg>
+        </a>
+        
+        <!-- Messenger Button -->
+        <div class="chatbox-button chatbox-messenger" id="messengerButton" aria-label="Chat Messenger" title="Chat Messenger">
+            <i class="fab fa-facebook-messenger"></i>
+        </div>
+        
+        <!-- AI Chatbox Toggle -->
+        <button id="chatboxToggle" class="chatbox-toggle" aria-label="Mở chatbox">
+            <i class="fas fa-comments"></i>
+            <span class="badge" id="chatboxBadge" style="display: none;">1</span>
+        </button>
+    </div>
+    
+    <div id="chatboxContainer" class="chatbox-container">
+        <div class="chatbox-header">
+            <div class="chatbox-header-info">
+                <div class="chatbox-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="chatbox-header-text">
+                    <h6>Hỗ trợ trực tuyến</h6>
+                    <small>Thường phản hồi trong vài phút</small>
+                </div>
+            </div>
+            <button id="chatboxClose" class="chatbox-close" aria-label="Đóng chatbox">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="chatboxMessages" class="chatbox-messages">
+            <!-- Messages will be added here -->
+        </div>
+        <div class="chatbox-input-container">
+            <input type="text" id="chatboxInput" class="chatbox-input" placeholder="Nhập tin nhắn của bạn..." />
+            <button id="chatboxSendBtn" class="chatbox-send-btn" aria-label="Gửi tin nhắn">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,490 @@
+@model PCSTORE.Models.Product
+
+@{
+    ViewData["Title"] = Model.Id == 0 ? "Thêm sản phẩm mới" : "Sửa sản phẩm";
+    var isEdit = Model.Id > 0;
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">
+        <i class="fas fa-@(isEdit ? "edit" : "plus")"></i> 
+        @(isEdit ? "Sửa sản phẩm" : "Thêm sản phẩm mới")
+    </h2>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            <i class="fas fa-exclamation-circle"></i> @TempData["Error"]
+        </div>
+    }
+
+    <form method="post" action="@Url.Action("ProductForm", "Admin")" enctype="multipart/form-data">
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.ImageUrl)
+        @Html.HiddenFor(m => m.ExtraImages)
+
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-bottom">
+                <h5 class="mb-0 text-dark">Thêm sản phẩm mới</h5>
+            </div>
+            <div class="card-body bg-white">
+                <div class="mb-3">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">Tên sản phẩm <span class="text-danger">*</span></label>
+                            <input asp-for="Name" class="form-control" required />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Brand" class="form-label">Thương hiệu</label>
+                                    <input asp-for="Brand" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="ModelCode" class="form-label">Mã sản phẩm / Model</label>
+                                    <input asp-for="ModelCode" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Warranty" class="form-label">Bảo hành</label>
+                                    <input asp-for="Warranty" class="form-control" placeholder="VD: 36 tháng" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Description" class="form-label">Mô tả ngắn</label>
+                                    <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Price" class="form-label">Giá bán <span class="text-danger">*</span></label>
+                                    <input asp-for="Price" type="number" step="1000" class="form-control" required min="0" />
+                                    <span asp-validation-for="Price" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="OldPrice" class="form-label">Giá cũ</label>
+                                    <input asp-for="OldPrice" type="number" step="1000" class="form-control" min="0" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="CategoryId" class="form-label">Danh mục <span class="text-danger">*</span></label>
+                                    @if (Model.CategoryId > 0)
+                                    {
+                                        <select class="form-select" disabled>
+                                            @foreach (var category in ViewBag.Categories as List<PCSTORE.Models.Category>)
+                                            {
+                                                @if (category.Id == Model.CategoryId)
+                                                {
+                                                    <option value="@category.Id" selected>@category.Name</option>
+                                                }
+                                            }
+                                        </select>
+                                        <input type="hidden" asp-for="CategoryId" />
+                                        <small class="text-muted d-block mt-1">
+                                            <i class="fas fa-info-circle"></i> Đã chọn từ trang trước. 
+                                            <a href="@Url.Action("SelectCategory", "Admin")" class="text-danger">Thay đổi?</a>
+                                        </small>
+                                    }
+                                    else
+                                    {
+                                        <select asp-for="CategoryId" class="form-select" required>
+                                            <option value="">-- Chọn danh mục --</option>
+                                            @foreach (var category in ViewBag.Categories as List<PCSTORE.Models.Category>)
+                                            {
+                                                <option value="@category.Id">@category.Name</option>
+                                            }
+                                        </select>
+                                    }
+                                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Stock" class="form-label">Tồn kho</label>
+                                    <input asp-for="Stock" type="number" class="form-control" min="0" value="@(Model.Stock == 0 ? 10 : Model.Stock)" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">Hình ảnh sản phẩm</label>
+                            <input type="file" name="images" class="form-control" accept="image/*" multiple />
+                            <small class="text-dark fw-normal">Bạn có thể chọn nhiều ảnh từ máy tính. Ảnh sẽ được lưu trên website.</small>
+
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                            {
+                                <div class="mt-3">
+                                    <span class="d-block mb-1 text-dark fw-medium">Ảnh hiện tại:</span>
+                                    <img src="@Model.ImageUrl" alt="Preview"
+                                         style="max-width: 200px; max-height: 200px; object-fit: cover; border-radius:4px; border:1px solid #dee2e6;"
+                                         onerror="this.style.display='none'">
+                                </div>
+                            }
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input asp-for="IsFeatured" type="checkbox" class="form-check-input" />
+                                <label asp-for="IsFeatured" class="form-check-label">Sản phẩm nổi bật</label>
+                            </div>
+                        </div>
+
+                        <!-- Thông số kỹ thuật chi tiết theo loại linh kiện -->
+                        <div class="mb-3" id="spec-section">
+                            <label class="form-label fw-bold">Thông số kỹ thuật chi tiết</label>
+                            
+                            <!-- Form CPU (CategoryId = 1) -->
+                            <div id="cpu-form" class="spec-form-panel" style="display: @(Model.CategoryId == 1 ? "block" : "none");">
+                                <div class="card bg-light border-0 p-3">
+                                    <h6 class="mb-3 text-danger"><i class="fas fa-microchip me-2"></i>Thông tin CPU</h6>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Dòng (Series) <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control cpu-field" name="cpuSeries" placeholder="VD: CELERON, CORE I5, RYZEN 5" value="@(Model.Specs.Contains("Dòng:") ? Model.Specs.Split('\n').FirstOrDefault(s => s.Contains("Dòng:"))?.Split(':')[1]?.Trim() : "")" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Đời (Generation)</label>
+                                            <input type="text" class="form-control cpu-field" name="cpuGeneration" placeholder="VD: 13th Gen, 7000 Series" value="@(Model.Specs.Contains("Đời:") ? Model.Specs.Split('\n').FirstOrDefault(s => s.Contains("Đời:"))?.Split(':')[1]?.Trim() : "")" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Hậu tố (Suffix)</label>
+                                            <input type="text" class="form-control cpu-field" name="cpuSuffix" placeholder="VD: K, X, F, KF" value="@(Model.Specs.Contains("Hậu tố:") ? Model.Specs.Split('\n').FirstOrDefault(s => s.Contains("Hậu tố:"))?.Split(':')[1]?.Trim() : "")" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Xung nhịp (Clock Speed) <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control cpu-field" name="cpuClockSpeed" placeholder="VD: 3.8GHz boost 5.0GHz" value="@(Model.Specs.Contains("Xung nhịp:") ? Model.Specs.Split('\n').FirstOrDefault(s => s.Contains("Xung nhịp:"))?.Split(':')[1]?.Trim() : "")" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Số nhân (Cores) <span class="text-danger">*</span></label>
+                                            <input type="number" class="form-control cpu-field" name="cpuCores" placeholder="VD: 8" min="1" value="@(Model.Specs.Contains("Số nhân:") ? Model.Specs.Split('\n').FirstOrDefault(s => s.Contains("Số nhân:"))?.Split(':')[1]?.Trim() : "")" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Số luồng (Threads) <span class="text-danger">*</span></label>
+                                            <input type="number" class="form-control cpu-field" name="cpuThreads" placeholder="VD: 16" min="1" value="@(Model.Specs.Contains("Số luồng:") ? Model.Specs.Split('\n').FirstOrDefault(s => s.Contains("Số luồng:"))?.Split(':')[1]?.Trim() : "")" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Cache</label>
+                                            <input type="text" class="form-control cpu-field" name="cpuCache" placeholder="VD: 12M, 24MB L3" value="@(Model.Specs.Contains("Cache:") ? Model.Specs.Split('\n').FirstOrDefault(s => s.Contains("Cache:"))?.Split(':')[1]?.Trim() : "")" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Socket <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control cpu-field" name="cpuSocket" placeholder="VD: LGA 1700, AM5" value="@(Model.Specs.Contains("Socket:") ? Model.Specs.Split('\n').FirstOrDefault(s => s.Contains("Socket:"))?.Split(':')[1]?.Trim() : "")" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Điện năng (TDP)</label>
+                                            <input type="text" class="form-control cpu-field" name="cpuTDP" placeholder="VD: 125W, 65W" value="@(Model.Specs.Contains("Điện năng:") ? Model.Specs.Split('\n').FirstOrDefault(s => s.Contains("Điện năng:"))?.Split(':')[1]?.Trim() : "")" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Công nghệ</label>
+                                            <input type="text" class="form-control cpu-field" name="cpuTechnology" placeholder="VD: 7nm, Intel 7, TSMC 5nm" value="@(Model.Specs.Contains("Công nghệ:") ? Model.Specs.Split('\n').FirstOrDefault(s => s.Contains("Công nghệ:"))?.Split(':')[1]?.Trim() : "")" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Form cho các loại khác (RAM, VGA, etc.) -->
+                            <div id="other-forms" class="spec-form-panel" style="display: @(Model.CategoryId == 1 ? "none" : (Model.CategoryId > 0 ? "block" : "none"));">
+                                @if (Model.CategoryId == 0)
+                                {
+                                    <small class="text-dark d-block mb-2 fw-normal">Vui lòng chọn <strong>Danh mục</strong> trước, sau đó hệ thống sẽ gợi ý form nhập thông số phù hợp.</small>
+                                }
+
+                                <div id="spec-tabs" class="mb-2">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button type="button" class="btn btn-outline-primary" data-spec="cpu">CPU</button>
+                                        <button type="button" class="btn btn-outline-primary" data-spec="ram">RAM</button>
+                                        <button type="button" class="btn btn-outline-primary" data-spec="gpu">VGA</button>
+                                        <button type="button" class="btn btn-outline-primary" data-spec="storage">SSD / HDD</button>
+                                        <button type="button" class="btn btn-outline-primary" data-spec="psu">PSU</button>
+                                        <button type="button" class="btn btn-outline-primary" data-spec="case">Case</button>
+                                        <button type="button" class="btn btn-outline-primary" data-spec="monitor">Màn hình</button>
+                                        <button type="button" class="btn btn-outline-primary" data-spec="other">Khác</button>
+                                    </div>
+                                </div>
+
+                                <div id="spec-panels">
+                                    <div class="spec-panel d-none" data-spec-panel="cpu">
+                                        <div class="row g-2">
+                                            <div class="col-6">
+                                                <input class="form-control form-control-sm spec-input" data-spec-label="Nhân / luồng" placeholder="Nhân / luồng (VD: 8 nhân 16 luồng)" />
+                                            </div>
+                                            <div class="col-6">
+                                                <input class="form-control form-control-sm spec-input" data-spec-label="Xung nhịp" placeholder="Xung nhịp (VD: 3.8GHz boost 5.0GHz)" />
+                                            </div>
+                                            <div class="col-6">
+                                                <input class="form-control form-control-sm spec-input" data-spec-label="Socket" placeholder="Socket (LGA1700, AM5...)" />
+                                            </div>
+                                            <div class="col-6">
+                                                <input class="form-control form-control-sm spec-input" data-spec-label="TDP" placeholder="TDP (VD: 125W)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                <div class="spec-panel d-none" data-spec-panel="ram">
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <input class="form-control form-control-sm spec-input" data-spec-label="Dung lượng" placeholder="Dung lượng (VD: 16GB / 32GB)" />
+                                        </div>
+                                        <div class="col-6">
+                                            <input class="form-control form-control-sm spec-input" data-spec-label="Bus" placeholder="Bus (VD: DDR4-3200, DDR5-6000)" />
+                                        </div>
+                                        <div class="col-6">
+                                            <input class="form-control form-control-sm spec-input" data-spec-label="Số thanh" placeholder="Số thanh (VD: 2x8GB)" />
+                                        </div>
+                                        <div class="col-6">
+                                            <input class="form-control form-control-sm spec-input" data-spec-label="Đặc biệt" placeholder="RGB, Low-profile..." />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="spec-panel d-none" data-spec-panel="gpu">
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <input class="form-control form-control-sm spec-input" data-spec-label="GPU" placeholder="GPU (VD: RTX 3060, RX 7600)" />
+                                        </div>
+                                        <div class="col-6">
+                                            <input class="form-control form-control-sm spec-input" data-spec-label="VRAM" placeholder="VRAM (VD: 8GB GDDR6)" />
+                                        </div>
+                                        <div class="col-6">
+                                            <input class="form-control form-control-sm spec-input" data-spec-label="Nguồn khuyến nghị" placeholder="Nguồn khuyến nghị (VD: 650W)" />
+                                        </div>
+                                        <div class="col-6">
+                                            <input class="form-control form-control-sm spec-input" data-spec-label="Cổng xuất hình" placeholder="HDMI, DP..." />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="spec-panel d-none" data-spec-panel="storage">
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <input class="form-control form-control-sm spec-input" data-spec-label="Dung lượng" placeholder="Dung lượng (VD: 1TB)" />
+                                        </div>
+                                        <div class="col-6">
+                                            <input class="form-control form-control-sm spec-input" data-spec-label="Chuẩn giao tiếp" placeholder="NVMe PCIe 4.0, SATA 3..." />
+                                        </div>
+                                        <div class="col-6">
+                                            <input class="form-control form-control-sm spec-input" data-spec-label="Tốc độ đọc/ghi" placeholder="Tốc độ đọc/ghi" />
+                                        </div>
+                                        <div class="col-6">
+                                            <input class="form-control form-control-sm spec-input" data-spec-label="Kích thước" placeholder="2.5\", M.2 2280..." />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="spec-panel d-none" data-spec-panel="psu">
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <input class="form-control form-control-sm spec-input" data-spec-label="Công suất" placeholder="Công suất (VD: 750W)" />
+                                        </div>
+                                        <div class="col-6">
+                                            <input class="form-control form-control-sm spec-input" data-spec-label="Chuẩn 80 Plus" placeholder="80 Plus Bronze/Gold/Platinum..." />
+                                        </div>
+                                        <div class="col-6">
+                                            <input class="form-control form-control-sm spec-input" data-spec-label="Modular" placeholder="Full / Semi / Non-modular" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="spec-panel d-none" data-spec-panel="case">
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <input class="form-control form-control-sm spec-input" data-spec-label="Kích thước case" placeholder="ATX Mid, ITX..." />
+                                        </div>
+                                        <div class="col-6">
+                                            <input class="form-control form-control-sm spec-input" data-spec-label="Hỗ trợ main" placeholder="ATX, mATX, ITX..." />
+                                        </div>
+                                        <div class="col-6">
+                                            <input class="form-control form-control-sm spec-input" data-spec-label="Chiều dài VGA tối đa" placeholder="VD: 360mm" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="spec-panel d-none" data-spec-panel="monitor">
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <input class="form-control form-control-sm spec-input" data-spec-label="Kích thước" placeholder="Kích thước (VD: 27 inch)" />
+                                        </div>
+                                        <div class="col-6">
+                                            <input class="form-control form-control-sm spec-input" data-spec-label="Độ phân giải" placeholder="VD: 2K, 4K, FHD..." />
+                                        </div>
+                                        <div class="col-6">
+                                            <input class="form-control form-control-sm spec-input" data-spec-label="Tần số quét" placeholder="VD: 144Hz, 240Hz..." />
+                                        </div>
+                                        <div class="col-6">
+                                            <input class="form-control form-control-sm spec-input" data-spec-label="Tấm nền" placeholder="IPS, VA, OLED..." />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="spec-panel d-none" data-spec-panel="other">
+                                    <textarea class="form-control form-control-sm spec-free" rows="4" placeholder="Nhập thông số kỹ thuật tùy ý (mỗi dòng một thông số)"></textarea>
+                                </div>
+                            </div>
+                            
+                            @Html.HiddenFor(m => m.Specs)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer bg-white border-top">
+                <button type="submit" class="btn btn-danger text-white">
+                    <i class="fas fa-save"></i> Lưu
+                </button>
+                <a href="@Url.Action("Products", "Admin")" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Hủy
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        (function () {
+            const specsHidden = document.querySelector('input[name="Specs"]');
+            const categoryId = @Model.CategoryId;
+            const cpuForm = document.getElementById('cpu-form');
+            const otherForms = document.getElementById('other-forms');
+            
+            // Hiển thị form phù hợp dựa trên CategoryId
+            if (categoryId === 1) {
+                // CPU form
+                if (cpuForm) cpuForm.style.display = 'block';
+                if (otherForms) otherForms.style.display = 'none';
+            } else {
+                // Other forms
+                if (cpuForm) cpuForm.style.display = 'none';
+                if (otherForms) otherForms.style.display = 'block';
+                
+                // Xử lý tabs cho các form khác
+                const tabs = document.querySelectorAll('#spec-tabs [data-spec]');
+                const panels = document.querySelectorAll('.spec-panel');
+                const specSection = document.getElementById('spec-section');
+
+                function activateTab(spec) {
+                    tabs.forEach(btn => {
+                        const isActive = btn.dataset.spec === spec;
+                        btn.classList.toggle('btn-outline-primary', isActive);
+                        btn.classList.toggle('btn-outline-secondary', !isActive);
+                    });
+                    panels.forEach(p => {
+                        p.classList.toggle('d-none', p.dataset.specPanel !== spec);
+                    });
+                }
+
+                tabs.forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        activateTab(this.dataset.spec);
+                    });
+                });
+
+                const categorySelect = document.querySelector('select[name="CategoryId"]');
+                if (categorySelect) {
+                    const catId = parseInt(categorySelect.value || '0');
+                    if (catId > 0 && specSection) {
+                        specSection.classList.remove('d-none');
+                    } else if (specSection) {
+                        specSection.classList.add('d-none');
+                    }
+
+                    let defaultSpec = 'other';
+                    if (catId === 1) defaultSpec = 'cpu';
+                    else if (catId === 3) defaultSpec = 'ram';
+                    else if (catId === 4) defaultSpec = 'gpu';
+                    else if (catId === 7 || catId === 8) defaultSpec = 'storage';
+                    else if (catId === 5) defaultSpec = 'psu';
+                    else if (catId === 6) defaultSpec = 'case';
+                    else if (catId === 9) defaultSpec = 'monitor';
+                    activateTab(defaultSpec);
+
+                    categorySelect.addEventListener('change', function () {
+                        const id = parseInt(this.value || '0');
+                        if (specSection) {
+                            if (id > 0) specSection.classList.remove('d-none');
+                            else specSection.classList.add('d-none');
+                        }
+                        let spec = 'other';
+                        if (id === 1) spec = 'cpu';
+                        else if (id === 3) spec = 'ram';
+                        else if (id === 4) spec = 'gpu';
+                        else if (id === 7 || id === 8) spec = 'storage';
+                        else if (id === 5) spec = 'psu';
+                        else if (id === 6) spec = 'case';
+                        else if (id === 9) spec = 'monitor';
+                        activateTab(spec);
+                    });
+                } else {
+                    activateTab('other');
+                }
+            }
+
+            // Xử lý submit form
+            const form = document.querySelector('form');
+            if (form && specsHidden) {
+                form.addEventListener('submit', function () {
+                    const lines = [];
+                    
+                    // Nếu là form CPU
+                    if (categoryId === 1) {
+                        const cpuFields = {
+                            'cpuSeries': 'Dòng',
+                            'cpuGeneration': 'Đời',
+                            'cpuSuffix': 'Hậu tố',
+                            'cpuClockSpeed': 'Xung nhịp',
+                            'cpuCores': 'Số nhân',
+                            'cpuThreads': 'Số luồng',
+                            'cpuCache': 'Cache',
+                            'cpuSocket': 'Socket',
+                            'cpuTDP': 'Điện năng',
+                            'cpuTechnology': 'Công nghệ'
+                        };
+                        
+                        Object.keys(cpuFields).forEach(fieldName => {
+                            const input = document.querySelector(`input[name="${fieldName}"]`);
+                            if (input && input.value.trim()) {
+                                lines.push(`${cpuFields[fieldName]}: ${input.value.trim()}`);
+                            }
+                        });
+                    } else {
+                        // Form khác
+                        const activePanel = document.querySelector('.spec-panel:not(.d-none)');
+                        if (activePanel) {
+                            activePanel.querySelectorAll('.spec-input').forEach(input => {
+                                const val = (input.value || '').trim();
+                                const label = input.dataset.specLabel || '';
+                                if (val) {
+                                    lines.push(label ? `${label}: ${val}` : val);
+                                }
+                            });
+                            const free = activePanel.querySelector('.spec-free');
+                            if (free && free.value.trim().length > 0) {
+                                lines.push(free.value.trim());
+                            }
+                        }
+                    }
+                    
+                    specsHidden.value = lines.join('\n');
+                });
+            }
+        })();
+    </script>
+}
+

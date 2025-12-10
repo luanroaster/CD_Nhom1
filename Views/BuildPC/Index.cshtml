@@ -1,0 +1,184 @@
+@{
+    ViewData["Title"] = "Build PC - Xây dựng cấu hình máy tính";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">Build PC - Xây dựng cấu hình máy tính PC giá rẻ chuẩn nhất</h1>
+            <p class="lead mb-4">Chọn linh kiện xây dựng cấu hình - Tự build PC</p>
+        </div>
+    </div>
+
+    <!-- Tabs cho các cấu hình -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <ul class="nav nav-tabs" id="configTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="config1-tab" data-bs-toggle="tab" data-bs-target="#config1" type="button" role="tab">
+                        Cấu hình 1
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="config2-tab" data-bs-toggle="tab" data-bs-target="#config2" type="button" role="tab">
+                        Cấu hình 2
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="config3-tab" data-bs-toggle="tab" data-bs-target="#config3" type="button" role="tab">
+                        Cấu hình 3
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="config4-tab" data-bs-toggle="tab" data-bs-target="#config4" type="button" role="tab">
+                        Cấu hình 4
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="config5-tab" data-bs-toggle="tab" data-bs-target="#config5" type="button" role="tab">
+                        Cấu hình 5
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Cột chọn linh kiện -->
+        <div class="col-lg-8">
+            <div class="tab-content" id="configTabContent">
+                <!-- Cấu hình 1 -->
+                <div class="tab-pane fade show active" id="config1" role="tabpanel">
+                    <div class="card mb-3">
+                        <div class="card-header text-white" style="background-color: #dc3545;">
+                            <h5 class="mb-0">Chọn linh kiện cho Cấu hình 1</h5>
+                        </div>
+                        <div class="card-body" id="config1-body">
+                            <!-- Sẽ được điền bằng JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Các cấu hình khác (2-5) -->
+                <div class="tab-pane fade" id="config2" role="tabpanel">
+                    <div class="card mb-3">
+                        <div class="card-header text-white" style="background-color: #dc3545;">
+                            <h5 class="mb-0">Chọn linh kiện cho Cấu hình 2</h5>
+                        </div>
+                        <div class="card-body" id="config2-body">
+                            <!-- Sẽ được điền bằng JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="config3" role="tabpanel">
+                    <div class="card mb-3">
+                        <div class="card-header text-white" style="background-color: #dc3545;">
+                            <h5 class="mb-0">Chọn linh kiện cho Cấu hình 3</h5>
+                        </div>
+                        <div class="card-body" id="config3-body">
+                            <!-- Sẽ được điền bằng JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="config4" role="tabpanel">
+                    <div class="card mb-3">
+                        <div class="card-header text-white" style="background-color: #dc3545;">
+                            <h5 class="mb-0">Chọn linh kiện cho Cấu hình 4</h5>
+                        </div>
+                        <div class="card-body" id="config4-body">
+                            <!-- Sẽ được điền bằng JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="config5" role="tabpanel">
+                    <div class="card mb-3">
+                        <div class="card-header text-white" style="background-color: #dc3545;">
+                            <h5 class="mb-0">Chọn linh kiện cho Cấu hình 5</h5>
+                        </div>
+                        <div class="card-body" id="config5-body">
+                            <!-- Sẽ được điền bằng JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cột tổng hợp và điều khiển -->
+        <div class="col-lg-4">
+            <div class="card sticky-top" style="top: 20px;">
+                    <div class="card-header text-white" style="background-color: #000;">
+                    <h5 class="mb-0"><i class="fas fa-calculator"></i> Chi phí dự tính</h5>
+                </div>
+                <div class="card-body">
+                    <div id="totalCost" class="mb-3">
+                        <h3 class="text-danger fw-bold">0 đ</h3>
+                    </div>
+                    <div id="configSummary" class="mb-3">
+                        <small class="text-muted">Chưa có linh kiện nào được chọn</small>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" onclick="exportImage()">
+                            <i class="fas fa-image"></i> Tải ảnh cấu hình
+                        </button>
+                        <button class="btn btn-success" onclick="exportExcel()">
+                            <i class="fas fa-file-excel"></i> Tải file excel cấu hình
+                        </button>
+                        <button class="btn btn-info" onclick="printConfig()">
+                            <i class="fas fa-print"></i> Xem & In
+                        </button>
+                        <button class="btn btn-warning" onclick="addToCart()">
+                            <i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng
+                        </button>
+                        <button class="btn btn-danger" onclick="clearConfig()">
+                            <i class="fas fa-redo"></i> Làm mới
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal xác nhận xóa -->
+<div class="modal fade" id="clearModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cảnh báo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Toàn bộ linh kiện của bộ PC hiện tại sẽ bị xóa đi. Bạn có chắc chắn muốn tiếp tục?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-danger" onclick="confirmClear()">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal thông báo -->
+<div class="modal fade" id="alertModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Thông báo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="alertMessage">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/buildpc.js"></script>
+}
+

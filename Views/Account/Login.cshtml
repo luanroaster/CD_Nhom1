@@ -1,0 +1,48 @@
+@{
+    ViewData["Title"] = "Đăng nhập khách hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white text-center">
+                    <h4 class="mb-0"><i class="fas fa-user me-2"></i>Đăng nhập tài khoản</h4>
+                </div>
+                <div class="card-body p-4">
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <i class="fas fa-exclamation-circle"></i> @ViewBag.Error
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <form asp-action="Login" asp-controller="Account" method="post">
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fas fa-user"></i> Tên đăng nhập</label>
+                            <input type="text" name="username" class="form-control" placeholder="Nhập tên đăng nhập" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fas fa-lock"></i> Mật khẩu</label>
+                            <input type="password" name="password" class="form-control" placeholder="Nhập mật khẩu" required />
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100 mb-3">
+                            <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                        </button>
+                    </form>
+
+                    <div class="text-center">
+                        <small class="text-muted">Chưa có tài khoản?</small><br />
+                        <a href="@Url.Action("Register", "Account")" class="text-decoration-none">
+                            <i class="fas fa-user-plus"></i> Đăng ký ngay
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

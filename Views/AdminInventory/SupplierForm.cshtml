@@ -1,0 +1,68 @@
+@model PCSTORE.Models.Supplier
+
+@{
+    ViewData["Title"] = Model.Id == 0 ? "Thêm nhà cung cấp" : "Sửa nhà cung cấp";
+    var isEdit = Model.Id > 0;
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white border-bottom">
+        <h5 class="mb-0">
+            <i class="fas fa-@(isEdit ? "edit" : "plus") me-2"></i>
+            @(isEdit ? "Sửa nhà cung cấp" : "Thêm nhà cung cấp mới")
+        </h5>
+    </div>
+    <div class="card-body">
+        <form method="post" action="@Url.Action("SupplierForm", "AdminInventory")">
+            @Html.HiddenFor(m => m.Id)
+            
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Tên nhà cung cấp <span class="text-danger">*</span></label>
+                <input asp-for="Name" class="form-control" required />
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="ContactPerson" class="form-label">Người liên hệ</label>
+                    <input asp-for="ContactPerson" class="form-control" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Phone" class="form-label">Điện thoại</label>
+                    <input asp-for="Phone" class="form-control" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">Email</label>
+                <input asp-for="Email" type="email" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Address" class="form-label">Địa chỉ</label>
+                <textarea asp-for="Address" class="form-control" rows="2"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Notes" class="form-label">Ghi chú</label>
+                <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <div class="form-check">
+                    <input asp-for="IsActive" type="checkbox" class="form-check-input" />
+                    <label asp-for="IsActive" class="form-check-label">Kích hoạt</label>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+                <a href="@Url.Action("Index", "AdminInventory")" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Hủy
+                </a>
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-save"></i> Lưu
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+

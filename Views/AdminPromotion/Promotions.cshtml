@@ -1,0 +1,83 @@
+@{
+    ViewData["Title"] = "Quản lý Khuyến mãi";
+    var promotions = ViewBag.Promotions as List<PCSTORE.Models.Promotion> ?? new List<PCSTORE.Models.Promotion>();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="mb-0"><i class="fas fa-tags me-2"></i>Quản lý Khuyến mãi</h4>
+        <small class="text-muted">Đang hoạt động: @(ViewBag.ActivePromotions ?? 0) mã</small>
+    </div>
+    <div class="btn-group" role="group">
+        <a href="@Url.Action("PromotionForm", "AdminPromotion")" class="btn btn-danger">
+            <i class="fas fa-plus"></i> Thêm mã khuyến mãi
+        </a>
+        <a href="@Url.Action("Banners", "AdminPromotion")" class="btn btn-outline-secondary">
+            <i class="fas fa-images"></i> Quản lý Banner
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Mã</th>
+                        <th>Tên</th>
+                        <th>Loại</th>
+                        <th>Giá trị</th>
+                        <th>Đã dùng</th>
+                        <th>Ngày hết hạn</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var promo in promotions)
+                    {
+                        <tr>
+                            <td><strong>@promo.Code</strong></td>
+                            <td>@promo.Name</td>
+                            <td>@promo.Type</td>
+                            <td>
+                                @if (promo.Type == "Percentage")
+                                {
+                                    <span>@promo.Value%</span>
+                                }
+                                else
+                                {
+                                    <span>@string.Format("{0:N0}", promo.Value) đ</span>
+                                }
+                            </td>
+                            <td>@promo.UsedCount / @(promo.MaxUsage?.ToString() ?? "∞")</td>
+                            <td>@promo.EndDate.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                @if (promo.IsActive && promo.EndDate >= DateTime.Now)
+                                {
+                                    <span class="badge bg-success">Hoạt động</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Không hoạt động</span>
+                                }
+                            </td>
+                            <td>
+                                <a href="@Url.Action("PromotionForm", "AdminPromotion", new { id = promo.Id })" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i> Sửa
+                                </a>
+                                <form method="post" action="@Url.Action("DeletePromotion", "AdminPromotion", new { id = promo.Id })" style="display: inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa mã khuyến mãi này?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-trash"></i> Xóa
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

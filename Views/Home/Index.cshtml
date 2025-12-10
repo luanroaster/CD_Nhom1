@@ -1,0 +1,301 @@
+﻿@{
+    ViewData["Title"] = "Trang chủ";
+    var categories = ViewBag.Categories as List<PCSTORE.Models.Category>;
+    var featuredProducts = ViewBag.FeaturedProducts as List<PCSTORE.Models.Product>;
+}
+
+<!-- Banner Slider -->
+<section class="banner-section mb-5">
+    <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="2"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="banner-slide text-white d-flex align-items-center" style="height: 400px; background: radial-gradient(circle at top left, #dc3545 0%, #5a0b16 45%, #050609 100%);">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h1 class="display-4 fw-bold mb-3">Linh kiện PC Chính Hãng</h1>
+                                <p class="lead mb-4">Giá tốt nhất thị trường - Bảo hành chính hãng</p>
+                                <a href="#" class="btn btn-light btn-lg">Xem ngay <i class="fas fa-arrow-right ms-2"></i></a>
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <i class="fas fa-desktop" style="font-size: 200px; opacity: 0.3;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="banner-slide text-white d-flex align-items-center" style="height: 400px; background: radial-gradient(circle at top, #5a0b16 0%, #050609 60%, #000000 100%);">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h1 class="display-4 fw-bold mb-3">Giảm giá lên đến 30%</h1>
+                                <p class="lead mb-4">Ưu đãi đặc biệt cho khách hàng mới</p>
+                                <a href="#" class="btn btn-light btn-lg">Mua ngay <i class="fas fa-shopping-cart ms-2"></i></a>
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <i class="fas fa-tags" style="font-size: 200px; opacity: 0.3;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="banner-slide text-white d-flex align-items-center" style="height: 400px; background: radial-gradient(circle at top right, #b71c2b 0%, #050609 55%, #000000 100%);">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h1 class="display-4 fw-bold mb-3">Miễn phí vận chuyển</h1>
+                                <p class="lead mb-4">Cho đơn hàng trên 500.000đ</p>
+                                <a href="#" class="btn btn-light btn-lg">Khám phá <i class="fas fa-truck ms-2"></i></a>
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <i class="fas fa-shipping-fast" style="font-size: 200px; opacity: 0.3;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+</section>
+
+<!-- Danh mục sản phẩm -->
+<section class="categories-section mb-5">
+    <div class="container">
+        <h2 class="section-title text-center mb-4">
+            <span class="d-inline-block position-relative">
+                DANH MỤC SẢN PHẨM
+                <span class="position-absolute bottom-0 start-50 translate-middle-x" style="width: 60px; height: 3px; background-color: #dc3545;"></span>
+            </span>
+        </h2>
+        <div class="row g-4">
+            @if (categories != null)
+            {
+                @foreach (var category in categories)
+                {
+                    string iconClass = "fas fa-microchip"; // Default icon
+                    if (category.Name.Contains("Keyboard") || category.Name.Contains("Bàn phím"))
+                        iconClass = "fas fa-keyboard";
+                    else if (category.Name.Contains("Mouse") || category.Name.Contains("Chuột"))
+                        iconClass = "fas fa-mouse";
+                    else if (category.Name.Contains("Speaker") || category.Name.Contains("Loa"))
+                        iconClass = "fas fa-volume-up";
+                    else if (category.Name.Contains("Headphone") || category.Name.Contains("Tai nghe"))
+                        iconClass = "fas fa-headphones";
+                    else if (category.Name.Contains("CPU") || category.Name.Contains("Bộ vi xử lý"))
+                        iconClass = "fas fa-microchip";
+                    else if (category.Name.Contains("Main") || category.Name.Contains("Bo mạch chủ"))
+                        iconClass = "fas fa-server";
+                    else if (category.Name.Contains("RAM") || category.Name.Contains("Bộ nhớ"))
+                        iconClass = "fas fa-memory";
+                    else if (category.Name.Contains("GPU") || category.Name.Contains("Card màn hình") || category.Name.Contains("Card đồ họa"))
+                        iconClass = "fas fa-desktop";
+                    else if (category.Name.Contains("PSU") || category.Name.Contains("Nguồn"))
+                        iconClass = "fas fa-plug";
+                    else if (category.Name.Contains("SSD") || category.Name.Contains("Ổ cứng thể rắn"))
+                        iconClass = "fas fa-hdd";
+                    else if (category.Name.Contains("HDD") || category.Name.Contains("Ổ cứng HDD"))
+                        iconClass = "fas fa-hdd";
+                    else if (category.Name.Contains("Tản nhiệt nước") || category.Name.Contains("Water Cooling"))
+                        iconClass = "fas fa-water";
+                    else if (category.Name.Contains("Tản nhiệt khí") || category.Name.Contains("Air Cooling"))
+                        iconClass = "fas fa-wind";
+                    else if (category.Name.Contains("Fan") || category.Name.Contains("tản nhiệt"))
+                        iconClass = "fas fa-fan";
+                    else if (category.Name.Contains("Case") || category.Name.Contains("Vỏ máy"))
+                        iconClass = "fas fa-box";
+                    else if (category.Name.Contains("Monitor") || category.Name.Contains("Màn hình"))
+                        iconClass = "fas fa-tv";
+
+                    // Map category ID hoặc tên với action name
+                    string actionName = "Index";
+                    if (category.Id == 1 || category.Name.Contains("CPU") || category.Name.Contains("Bộ vi xử lý"))
+                        actionName = "CPU";
+                    else if (category.Id == 2 || category.Name.Contains("Main") || category.Name.Contains("Bo mạch chủ"))
+                        actionName = "Mainboard";
+                    else if (category.Id == 3 || category.Name.Contains("RAM") || category.Name.Contains("Bộ nhớ"))
+                        actionName = "RAM";
+                    else if (category.Id == 4 || category.Name.Contains("GPU") || category.Name.Contains("Card màn hình") || category.Name.Contains("Card đồ họa") || category.Name.Contains("VGA"))
+                        actionName = "GPU";
+                    else if (category.Id == 5 || category.Name.Contains("PSU") || category.Name.Contains("Nguồn"))
+                        actionName = "PSU";
+                    else if (category.Id == 6 || category.Name.Contains("Case") || category.Name.Contains("Vỏ máy"))
+                        actionName = "Case";
+                    else if (category.Id == 7 || category.Name.Contains("SSD"))
+                        actionName = "SSD";
+                    else if (category.Id == 8 || category.Name.Contains("HDD"))
+                        actionName = "HDD";
+                    else if (category.Id == 9 || category.Name.Contains("Monitor") || category.Name.Contains("Màn hình"))
+                        actionName = "Monitor";
+                    else if (category.Id == 10 || category.Name.Contains("Fan") || category.Name.Contains("Quạt tản nhiệt"))
+                        actionName = "Fan";
+                    else if (category.Id == 11 || category.Name.Contains("Tản nhiệt nước") || category.Name.Contains("Water Cooling"))
+                        actionName = "WaterCooling";
+                    else if (category.Id == 12 || category.Name.Contains("Tản nhiệt khí") || category.Name.Contains("Air Cooling"))
+                        actionName = "AirCooling";
+                    else if (category.Id == 13 || category.Name.Contains("Keyboard") || category.Name.Contains("Bàn phím"))
+                        actionName = "Keyboard";
+                    else if (category.Id == 14 || category.Name.Contains("Mouse") || category.Name.Contains("Chuột"))
+                        actionName = "Mouse";
+                    else if (category.Id == 15 || category.Name.Contains("Speaker") || category.Name.Contains("Loa"))
+                        actionName = "Speaker";
+                    else if (category.Id == 16 || category.Name.Contains("Headphone") || category.Name.Contains("Tai nghe"))
+                        actionName = "Headphone";
+                    
+                    string categoryUrl = Url.Action(actionName, "Products");
+                    <div class="col-6 col-md-3">
+                        <div class="category-card text-center p-4 bg-white rounded shadow-sm h-100 hover-effect d-flex flex-column" style="cursor: pointer;" onclick="window.location.href='@categoryUrl'">
+                            <div class="category-icon mb-3" style="min-height: 80px; display: flex; align-items: center; justify-content: center;">
+                                <i class="@iconClass" style="font-size: 3rem; color: #6c757d;"></i>
+                            </div>
+                            <h5 class="fw-bold mb-2" style="min-height: 48px; display: flex; align-items: center; justify-content: center;">@category.Name</h5>
+                            <p class="text-muted small mb-3" style="min-height: 40px; display: flex; align-items: center; justify-content: center;">@category.Description</p>
+                            <div class="mt-auto">
+                                <a href="@categoryUrl" class="btn btn-danger btn-sm text-white w-100">Xem thêm <i class="fas fa-arrow-right ms-1"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                }
+                
+                <!-- Card "Xem tất cả" -->
+                <div class="col-6 col-md-3">
+                    <div class="category-card text-center p-4 bg-white rounded shadow-sm h-100 hover-effect d-flex flex-column">
+                        <div class="category-icon mb-3" style="min-height: 80px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-th-large" style="font-size: 3rem; color: #6c757d;"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2" style="min-height: 48px; display: flex; align-items: center; justify-content: center;">Xem tất cả</h5>
+                        <p class="text-muted small mb-3" style="min-height: 40px; display: flex; align-items: center; justify-content: center;">Tất cả danh mục sản phẩm</p>
+                        <div class="mt-auto">
+                            <a href="#" class="btn btn-danger btn-sm text-white w-100">Xem tất cả <i class="fas fa-arrow-right ms-1"></i></a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Sản phẩm nổi bật -->
+<section class="featured-products-section mb-5 bg-light py-5">
+    <div class="container">
+        <h2 class="section-title text-center mb-4">
+            <span class="d-inline-block position-relative">
+                SẢN PHẨM NỔI BẬT
+                <span class="position-absolute bottom-0 start-50 translate-middle-x" style="width: 60px; height: 3px; background-color: #dc3545;"></span>
+            </span>
+        </h2>
+        <div class="row g-4">
+            @if (featuredProducts != null)
+            {
+                @foreach (var product in featuredProducts)
+                {
+                    <div class="col-6 col-md-4 col-lg-4">
+                        <div class="product-card bg-white rounded shadow-sm h-100 overflow-hidden hover-effect">
+                            <div class="position-relative">
+                                <img src="@(string.IsNullOrEmpty(product.ImageUrl) ? "https://via.placeholder.com/300x300?text=No+Image" : product.ImageUrl)" 
+                                     alt="@product.Name" 
+                                     class="product-image-square"
+                                     onerror="this.onerror=null; this.src='https://via.placeholder.com/300x300?text=No+Image';"
+                                     loading="lazy">
+                                @if (product.OldPrice.HasValue && product.OldPrice.Value > 0)
+                                {
+                                    <span class="badge bg-danger position-absolute top-0 end-0 m-2">
+                                        -@((int)((1 - (double)(product.Price / product.OldPrice.Value)) * 100))%
+                                    </span>
+                                }
+                            </div>
+                            <div class="p-3">
+                                <h6 class="fw-bold mb-2 product-name" style="min-height: 48px; font-size: 0.9rem;">@product.Name</h6>
+                                <div class="price-section mb-2">
+                                    <div class="text-danger fw-bold fs-5">@string.Format("{0:N0}", product.Price) đ</div>
+                                    @if (product.OldPrice.HasValue)
+                                    {
+                                        <div class="text-muted text-decoration-line-through small">@string.Format("{0:N0}", product.OldPrice) đ</div>
+                                    }
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-primary btn-sm" onclick="addToCart(@product.Id, '@product.Name.Replace("'", "\\'")', @product.Price)">
+                                        <i class="fas fa-cart-plus me-1"></i> Thêm vào giỏ
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm" onclick="viewDetail(@product.Id)">
+                                        <i class="fas fa-eye me-1"></i> Xem chi tiết
+                                    </button>
+                                </div>
+                                @if (product.Stock > 0)
+                                {
+                                    <small class="text-success mt-2 d-block"><i class="fas fa-check-circle"></i> Còn hàng</small>
+                                }
+                                else
+                                {
+                                    <small class="text-danger mt-2 d-block"><i class="fas fa-times-circle"></i> Hết hàng</small>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+        <div class="text-center mt-4">
+            <a href="#" class="btn btn-primary btn-lg">Xem tất cả sản phẩm <i class="fas fa-arrow-right ms-2"></i></a>
+        </div>
+    </div>
+</section>
+
+<!-- Ưu đãi đặc biệt -->
+<section class="special-offers-section mb-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="offer-card text-white rounded p-4 h-100">
+                    <div class="d-flex align-items-center">
+                        <div class="offer-icon me-3">
+                            <i class="fas fa-gift fa-3x"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-1">Ưu đãi đặc biệt</h5>
+                            <p class="mb-0">Giảm giá lên đến 30%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="offer-card text-white rounded p-4 h-100">
+                    <div class="d-flex align-items-center">
+                        <div class="offer-icon me-3">
+                            <i class="fas fa-shipping-fast fa-3x"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-1">Miễn phí vận chuyển</h5>
+                            <p class="mb-0">Cho đơn hàng trên 500.000đ</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="offer-card text-white rounded p-4 h-100">
+                    <div class="d-flex align-items-center">
+                        <div class="offer-icon me-3">
+                            <i class="fas fa-shield-alt fa-3x"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-1">Bảo hành chính hãng</h5>
+                            <p class="mb-0">Cam kết chất lượng tốt nhất</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

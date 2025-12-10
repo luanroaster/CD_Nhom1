@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin Panel - PC STORE</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/PCSTORE.styles.css" asp-append-version="true" />
+    <style>
+        .admin-sidebar {
+            min-height: 100vh;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .admin-sidebar .sidebar-header {
+            background-color: #1a252f;
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 2px solid #dc3545;
+        }
+
+        .admin-sidebar .sidebar-header h4 {
+            color: #dc3545;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .admin-sidebar .nav-link {
+            color: #ecf0f1;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #34495e;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .admin-sidebar .nav-link i {
+            width: 25px;
+            margin-right: 10px;
+        }
+
+        .admin-sidebar .nav-link:hover,
+        .admin-sidebar .nav-link.active {
+            background-color: #34495e;
+            color: #dc3545;
+            padding-left: 2rem;
+        }
+
+        .admin-content {
+            margin-left: 250px;
+            padding: 2rem;
+            min-height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        .admin-topbar {
+            background-color: #ffffff;
+            padding: 1rem 2rem;
+            margin: -2rem -2rem 2rem -2rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-topbar .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        @@media (max-width: 768px) {
+            .admin-sidebar {
+                width: 100%;
+                position: relative;
+            }
+
+            .admin-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-sidebar">
+        <div class="sidebar-header">
+            <h4><i class="fas fa-store"></i> PC STORE</h4>
+            <small class="text-muted">Admin Panel</small>
+        </div>
+        <nav class="nav flex-column">
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminDashboard" ? "active" : "")" href="@Url.Action("Index", "AdminDashboard")">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Admin" && ViewContext.RouteData.Values["action"]?.ToString() == "Products" ? "active" : "")" href="@Url.Action("Products", "Admin")">
+                <i class="fas fa-box"></i> Quản lý Sản phẩm
+            </a>
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminCategory" ? "active" : "")" href="@Url.Action("Index", "AdminCategory")">
+                <i class="fas fa-list"></i> Quản lý Danh mục
+            </a>
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminOrder" ? "active" : "")" href="@Url.Action("Index", "AdminOrder")">
+                <i class="fas fa-shopping-cart"></i> Quản lý Đơn hàng
+            </a>
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminCustomer" ? "active" : "")" href="@Url.Action("Index", "AdminCustomer")">
+                <i class="fas fa-users"></i> Quản lý Khách hàng
+            </a>
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminInventory" ? "active" : "")" href="@Url.Action("Index", "AdminInventory")">
+                <i class="fas fa-warehouse"></i> Quản lý Kho
+            </a>
+            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminPromotion" ? "active" : "")" href="@Url.Action("Promotions", "AdminPromotion")">
+                <i class="fas fa-tags"></i> Khuyến mãi & Banner
+            </a>
+            <hr class="my-2" style="border-color: #34495e;">
+            <a class="nav-link" href="@Url.Action("Index", "Home")" target="_blank">
+                <i class="fas fa-home"></i> Về trang chủ
+            </a>
+            <form method="post" action="@Url.Action("Logout", "Auth")" style="margin: 0;">
+                <button type="submit" class="nav-link w-100 text-start border-0 bg-transparent" style="color: #ecf0f1;">
+                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                </button>
+            </form>
+        </nav>
+    </div>
+
+    <div class="admin-content">
+        <div class="admin-topbar">
+            <div>
+                <h5 class="mb-0">@ViewData["Title"]</h5>
+                @using Microsoft.AspNetCore.Http
+                @if (Context.Session.GetString("AdminFullName") != null)
+                {
+                    <small class="text-muted">
+                        <i class="fas fa-user-shield"></i> @Context.Session.GetString("AdminFullName")
+                    </small>
+                }
+            </div>
+            <div class="user-info">
+                <span class="text-muted">
+                    <i class="fas fa-clock"></i> @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+                </span>
+            </div>
+        </div>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle"></i> @TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle"></i> @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @RenderBody()
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+
