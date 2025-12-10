@@ -1,0 +1,18 @@
+[
+  {
+    "ContainingType": "PCSTORE.Controllers.ChatController",
+    "Method": "SendMessage",
+    "RelativePath": "api/Chat/message",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "PCSTORE.Controllers.ChatRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
