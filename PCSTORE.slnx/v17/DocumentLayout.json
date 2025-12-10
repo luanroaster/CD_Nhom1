@@ -1,0 +1,58 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\nhatk\\source\\repos\\PCSTORE\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{6E76BDB2-5E3D-652D-2F1E-DE80705027EA}|PCSTORE\\PCSTORE.csproj|c:\\users\\nhatk\\source\\repos\\pcstore\\pcstore\\data\\products.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{6E76BDB2-5E3D-652D-2F1E-DE80705027EA}|PCSTORE\\PCSTORE.csproj|solutionrelative:pcstore\\data\\products.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6E76BDB2-5E3D-652D-2F1E-DE80705027EA}|PCSTORE\\PCSTORE.csproj|c:\\users\\nhatk\\source\\repos\\pcstore\\pcstore\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6E76BDB2-5E3D-652D-2F1E-DE80705027EA}|PCSTORE\\PCSTORE.csproj|solutionrelative:pcstore\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "products.json",
+              "DocumentMoniker": "C:\\Users\\nhatk\\source\\repos\\PCSTORE\\PCSTORE\\Data\\products.json",
+              "RelativeDocumentMoniker": "PCSTORE\\Data\\products.json",
+              "ToolTip": "C:\\Users\\nhatk\\source\\repos\\PCSTORE\\PCSTORE\\Data\\products.json",
+              "RelativeToolTip": "PCSTORE\\Data\\products.json",
+              "ViewState": "AgIAAOMBAAAAAAAAAAAuwPwBAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-12-09T17:33:27.139Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\nhatk\\source\\repos\\PCSTORE\\PCSTORE\\Program.cs",
+              "RelativeDocumentMoniker": "PCSTORE\\Program.cs",
+              "ToolTip": "C:\\Users\\nhatk\\source\\repos\\PCSTORE\\PCSTORE\\Program.cs",
+              "RelativeToolTip": "PCSTORE\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-08T10:39:17.538Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
